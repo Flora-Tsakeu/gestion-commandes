@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 public class CommandeService {
 
     private static final Logger log = LoggerFactory.getLogger(CommandeService.class);
+      private static final BigDecimal TAUX_TVA = new BigDecimal("0.20");
     
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
@@ -55,6 +56,8 @@ public class CommandeService {
         }
 
         commande.setMontantTotalHt(totalHt.setScale(2, RoundingMode.HALF_UP));
+        BigDecimal totalTtc = totalHt.multiply(BigDecimal.ONE.add(TAUX_TVA));
+        commande.setMontantTotalTtc(totalTtc.setScale(2, RoundingMode.HALF_UP));
         
         Commande enregistree = commandeRepository.save(commande);
         log.info("commande creee, client={}, nbLignes={}, totalTtc={}",
