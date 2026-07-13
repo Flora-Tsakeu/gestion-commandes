@@ -10,6 +10,7 @@ fi
 
 echo "artefact pret pour le deploiement : $JAR"
 
+#j'ai créee un new repository secret appelé DEPLOY_TOKEN afin de resoudre l'echec de deployement
 if [ -z "${DEPLOY_TOKEN:-}" ]; then
     echo "le token d'authentification vers l'environnement cible est absent"
     exit 1
