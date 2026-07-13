@@ -2,6 +2,7 @@
 set -euo pipefail
 
 LISTE_BLOCAGE="scripts/denylist-dependances.txt"
+mkdir -p target
 RESOLUTION=$(mvn -B dependency:list -DoutputFile=/dev/stdout -Dsort=true 2>/dev/null | grep -E '^\s+[a-zA-Z0-9._-]+:[a-zA-Z0-9._-]+:jar:' || true)
 
 echo "$RESOLUTION" > target/dependances-resolues.txt
