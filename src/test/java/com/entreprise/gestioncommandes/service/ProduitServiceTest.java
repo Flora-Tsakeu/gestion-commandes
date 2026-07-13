@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.service;
 
+import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +50,20 @@ class ProduitServiceTest {
         when(produitRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> produitService.recupererParId(99L))
+                .isInstanceOf(ProduitIntrouvableException.class)
                 .hasMessageContaining("99");
+    }
+
+    @Test
+    void doitMettreAJourLeStockLorsDeLaModification() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+        Produit modifications = new Produit("CLAV-001", "Clavier mecanique RGB", new BigDecimal("64.90"), 10);
+        when(produitRepository.save(any(Produit.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Produit resultat = produitService.mettreAJour(1L, modifications);
+
+        assertThat(resultat.getQuantiteStock()).isEqualTo(10);
+        assertThat(resultat.getLibelle()).isEqualTo("Clavier mecanique RGB");
     }
 
    

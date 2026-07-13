@@ -34,5 +34,16 @@ public class ProduitController {
         return produitService.creerProduit(produit);
     }
 
+    @PutMapping("/{id}")
+    public Produit modifier(@PathVariable Long id, @Valid @RequestBody Produit produit) {
+        return produitService.mettreAJour(id, produit);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void supprimer(@PathVariable Long id) {
+        produitService.supprimer(id);
+    }
+
     
 }

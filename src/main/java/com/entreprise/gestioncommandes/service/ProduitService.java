@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.service;
 
+import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
@@ -24,7 +25,8 @@ public class ProduitService {
     }
 
     public Produit recupererParId(Long id) {
-        return produitRepository.findById(id).orElse(null);
+        return produitRepository.findById(id)
+                .orElseThrow(() -> new ProduitIntrouvableException(id));
                
     }
 
@@ -32,6 +34,22 @@ public class ProduitService {
         Produit enregistre = produitRepository.save(produit);
         log.info("produit cree, reference={}, stock initial={}", enregistre.getReference(), enregistre.getQuantiteStock());
         return enregistre;
+    }
+
+    public Produit mettreAJour(Long id, Produit modifications) {
+        Produit existant = recupererParId(id);
+        existant.setLibelle(modifications.getLibelle());
+        existant.setPrixUnitaireHt(modifications.getPrixUnitaireHt());
+        existant.setQuantiteStock(modifications.getQuantiteStock());
+        Produit maj = produitRepository.save(existant);
+        log.info("produit mis a jour, id={}, nouveau stock={}", id, maj.getQuantiteStock());
+        return maj;
+    }
+
+    public void supprimer(Long id) {
+        Produit existant = recupererParId(id);
+        produitRepository.delete(existant);
+        log.info("produit supprime, id={}", id);
     }
 
     
