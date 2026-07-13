@@ -1,0 +1,156 @@
+name: pipeline-gestion-commandes
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: "17"
+  MAVEN_CACHE_KEY: maven-m2-${{ github.run_id }}
+
+jobs:
+
+  setup-cache:
+    name: "Job 1 - Setup et cache"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperation du code source
+        uses: actions/checkout@v4
+
+      - name: Installation JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Restauration du cache Maven
+        id: cache-m2
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-repo-
+
+      - name: Telechargement des dependances hors ligne
+        run: mvn -B dependency:go-offline
+
+  qualite-code:
+    name: "Job 2 - Qualite du code"
+    needs: setup-cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-repo-
+
+      - name: Analyse Checkstyle
+        run: mvn -B checkstyle:check
+
+  build-tests-unitaires:
+    name: "Job 3 - Build et tests unitaires"
+    needs: qualite-code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-repo-
+
+      - name: Compilation et tests unitaires
+        run: mvn -B test
+
+      - name: Archivage des rapports de tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-tests-unitaires
+          path: target/surefire-reports/
+
+  tests-integration:
+    name: "Job 4 - Tests d'integration"
+    needs: build-tests-unitaires
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-repo-
+
+      - name: Verification complete avec contexte Spring et H2
+        run: mvn -B verify -DskipUnitTests=false
+
+      - name: Archivage des rapports d'integration
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-tests-integration
+          path: target/failsafe-reports/
+
+  scan-securite:
+    name: "Job 5 - Scan de securite"
+    needs: tests-integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-repo-
+
+      - name: Controle des dependances contre la liste de blocage interne
+        run: bash scripts/scan-dependances.sh
+
+  packaging-deploiement:
+    name: "Job 6 - Packaging et deploiement"
+    needs: scan-securite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-repo-
+
+      - name: Construction du jar
+        run: mvn -B package -DskipTests
+
+      - name: Simulation de deploiement vers l'environnement cible
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: bash scripts/deploiement-simule.sh
