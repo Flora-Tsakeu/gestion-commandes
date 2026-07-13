@@ -10,6 +10,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class LigneCommande {
 
@@ -18,6 +20,7 @@ public class LigneCommande {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private Commande commande;
 
     @ManyToOne
