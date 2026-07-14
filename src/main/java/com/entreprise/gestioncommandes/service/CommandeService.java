@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
+import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class CommandeService {
@@ -64,7 +66,15 @@ public class CommandeService {
 
     public Commande recupererParId(Long id) {
         return commandeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("commande introuvable pour l'identifiant " + id));
+                .orElseThrow(() -> new CommandeIntrouvableException(id));
+    }
+    
+    public List<Commande> listerToutes() {
+        return commandeRepository.findAllByOrderByDateCreationDesc();
+    }
+
+    public List<Commande> listerParClient(String client) {
+        return commandeRepository.findByClientOrderByDateCreationDesc(client);
     }
 
     @Transactional
@@ -87,3 +97,5 @@ public class CommandeService {
         return misAJour;
     }
 }
+
+
