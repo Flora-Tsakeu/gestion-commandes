@@ -2,7 +2,7 @@ package com.entreprise.gestioncommandes.integration;
 
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
-//import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ class CommandeIntegrationIT {
     @Autowired
     private ProduitRepository produitRepository;
 
-   // @Autowired
-   // private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Long idProduitDispo;
 
@@ -79,4 +79,34 @@ class CommandeIntegrationIT {
                         .content(corps))
                 .andExpect(status().isConflict());
     }
+
+    @Test
+    void doitReintegrerLeStockLorsDeLAnnulation() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Est",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 4 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        String reponse = mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        Long idCommande = objectMapper.readTree(reponse).get("id").asLong();
+
+        mockMvc.perform(post("/api/commandes/" + idCommande + "/annulation"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.annulee").value(true));
+
+        mockMvc.perform(get("/api/produits/" + idProduitDispo))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantiteStock").value(15));
+    }
+
+
 }
