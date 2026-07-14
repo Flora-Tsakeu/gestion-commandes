@@ -30,6 +30,12 @@ public class ProduitService {
                
     }
 
+    public Produit recupererParReference(String reference) {
+        return produitRepository.findByReference(reference)
+                .orElseThrow(() -> new ProduitIntrouvableException(reference));
+    }
+
+
     public Produit creerProduit(Produit produit) {
         Produit enregistre = produitRepository.save(produit);
         log.info("produit cree, reference={}, stock initial={}", enregistre.getReference(), enregistre.getQuantiteStock());

@@ -28,6 +28,11 @@ public class ProduitController {
         return produitService.recupererParId(id);
     }
 
+    @GetMapping("/reference/{reference}")
+    public Produit recupererParReference(@PathVariable String reference) {
+        return produitService.recupererParReference(reference);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Produit creer(@Valid @RequestBody Produit produit) {
