@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +65,34 @@ class ProduitServiceTest {
 
         assertThat(resultat.getQuantiteStock()).isEqualTo(10);
         assertThat(resultat.getLibelle()).isEqualTo("Clavier mecanique RGB");
+    }
+
+    @Test
+    void doitRetrouverUnProduitParSaReference() {
+        when(produitRepository.findByReference("CLAV-001")).thenReturn(Optional.of(clavier));
+
+        Produit resultat = produitService.recupererParReference("CLAV-001");
+
+        assertThat(resultat.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void doitLeverUneExceptionSiReferenceInconnue() {
+        when(produitRepository.findByReference("INEXISTANT")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> produitService.recupererParReference("INEXISTANT"))
+                .isInstanceOf(ProduitIntrouvableException.class);
+    }
+
+    @Test
+    void doitRemonterLesProduitsEnDessousDuSeuil() {
+        Produit stockBas = new Produit("CLAV-002", "Clavier basique", new BigDecimal("15.00"), 2);
+        when(produitRepository.findByQuantiteStockLessThanEqual(5)).thenReturn(List.of(stockBas));
+
+        List<Produit> resultat = produitService.listerStockFaible(5);
+
+        assertThat(resultat).hasSize(1);
+        assertThat(resultat.get(0).getReference()).isEqualTo("CLAV-002");
     }
 
    
