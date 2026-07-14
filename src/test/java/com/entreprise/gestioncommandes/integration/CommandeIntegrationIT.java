@@ -1,6 +1,7 @@
 package com.entreprise.gestioncommandes.integration;
 
 import com.entreprise.gestioncommandes.model.Produit;
+import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,12 +30,16 @@ class CommandeIntegrationIT {
     private ProduitRepository produitRepository;
 
     @Autowired
+    private CommandeRepository commandeRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private Long idProduitDispo;
 
     @BeforeEach
     void chargerDonnees() {
+        commandeRepository.deleteAll(); 
         produitRepository.deleteAll();
         Produit produit = new Produit("SOU-014", "Souris sans fil", new BigDecimal("29.90"), 15);
         idProduitDispo = produitRepository.save(produit).getId();
