@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-//import java.util.List;
+import java.util.List;
 
 @Service
 public class ProduitService {
@@ -58,6 +58,10 @@ public class ProduitService {
         Produit existant = recupererParId(id);
         produitRepository.delete(existant);
         log.info("produit supprime, id={}", id);
+    }
+
+    public List<Produit> listerStockFaible(int seuil) {
+        return produitRepository.findByQuantiteStockLessThanEqual(seuil);
     }
 
     

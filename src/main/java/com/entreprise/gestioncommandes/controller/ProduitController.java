@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-//import java.util.List;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/produits")
@@ -23,6 +23,11 @@ public class ProduitController {
     @GetMapping
     public Page<Produit> lister(Pageable pageable) {
         return produitService.listerProduits(pageable);
+    }
+
+    @GetMapping("/stock-faible")
+    public List<Produit> listerStockFaible(@RequestParam(defaultValue = "5") int seuil) {
+        return produitService.listerStockFaible(seuil);
     }
 
     @GetMapping("/{id}")
