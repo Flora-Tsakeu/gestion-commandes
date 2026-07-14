@@ -15,13 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Service
 public class CommandeService {
 
     private static final Logger log = LoggerFactory.getLogger(CommandeService.class);
-      private static final BigDecimal TAUX_TVA = new BigDecimal("0.20");
     
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
@@ -55,9 +53,8 @@ public class CommandeService {
             totalHt = totalHt.add(produit.getPrixUnitaireHt().multiply(BigDecimal.valueOf(ligneRequete.getQuantite())));
         }
 
-        commande.setMontantTotalHt(totalHt.setScale(2, RoundingMode.HALF_UP));
-        BigDecimal totalTtc = totalHt.multiply(BigDecimal.ONE.add(TAUX_TVA));
-        commande.setMontantTotalTtc(totalTtc.setScale(2, RoundingMode.HALF_UP));
+        commande.setMontantTotalHt(CalculateurTva.arrondirDeuxDecimales(totalHt));
+        commande.setMontantTotalTtc(CalculateurTva.calculerMontantTtc(totalHt));
         
         Commande enregistree = commandeRepository.save(commande);
         log.info("commande creee, client={}, nbLignes={}, totalTtc={}",
