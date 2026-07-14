@@ -31,6 +31,8 @@ public class Commande {
 
     private BigDecimal montantTotalTtc = BigDecimal.ZERO;
 
+    private boolean annulee = false;
+
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<LigneCommande> lignes = new ArrayList<>();
@@ -88,5 +90,13 @@ public class Commande {
 
     public void setLignes(List<LigneCommande> lignes) {
         this.lignes = lignes;
+    }
+
+    public boolean isAnnulee() {
+        return annulee;
+    }
+
+    public void setAnnulee(boolean annulee) {
+        this.annulee = annulee;
     }
 }

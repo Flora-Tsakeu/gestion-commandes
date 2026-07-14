@@ -66,4 +66,24 @@ public class CommandeService {
         return commandeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("commande introuvable pour l'identifiant " + id));
     }
+
+    @Transactional
+    public Commande annuler(Long id) {
+        Commande commande = recupererParId(id);
+        if (commande.isAnnulee()) {
+            log.warn("tentative d'annulation d'une commande deja annulee, id={}", id);
+            return commande;
+        }
+
+        for (LigneCommande ligne : commande.getLignes()) {
+            Produit produit = ligne.getProduit();
+            produit.setQuantiteStock(produit.getQuantiteStock() + ligne.getQuantite());
+            produitRepository.save(produit);
+        }
+
+        commande.setAnnulee(true);
+        Commande misAJour = commandeRepository.save(commande);
+        log.info("commande annulee, id={}, stock reintegre pour {} ligne(s)", id, commande.getLignes().size());
+        return misAJour;
+    }
 }
