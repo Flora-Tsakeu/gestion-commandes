@@ -8,6 +8,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
@@ -19,9 +20,11 @@ public class Produit {
     private Long id;
 
     @NotBlank(message = "la reference produit est obligatoire")
+    @Size(max = 30, message = "la reference ne peut pas depasser 30 caracteres")
     private String reference;
 
     @NotBlank(message = "le libelle est obligatoire")
+    @Size(max = 120, message = "le libelle ne peut pas depasser 120 caracteres")
     private String libelle;
 
     @NotNull

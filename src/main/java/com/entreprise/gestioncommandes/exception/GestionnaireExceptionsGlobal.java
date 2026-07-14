@@ -18,6 +18,11 @@ public class GestionnaireExceptionsGlobal {
         return construireReponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(CommandeIntrouvableException.class)
+    public ResponseEntity<Map<String, Object>> gererCommandeIntrouvable(CommandeIntrouvableException ex) {
+        return construireReponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
     @ExceptionHandler(StockInsuffisantException.class)
     public ResponseEntity<Map<String, Object>> gererStockInsuffisant(StockInsuffisantException ex) {
         return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
