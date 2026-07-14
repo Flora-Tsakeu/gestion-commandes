@@ -5,9 +5,11 @@ import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+//import java.util.List;
 
 @Service
 public class ProduitService {
@@ -20,8 +22,8 @@ public class ProduitService {
         this.produitRepository = produitRepository;
     }
 
-    public List<Produit> listerProduits() {
-        return produitRepository.findAll();
+    public Page<Produit> listerProduits(Pageable pageable) {
+        return produitRepository.findAll(pageable);
     }
 
     public Produit recupererParId(Long id) {

@@ -3,10 +3,12 @@ package com.entreprise.gestioncommandes.controller;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.service.ProduitService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+//import java.util.List;
 
 @RestController
 @RequestMapping("/api/produits")
@@ -19,8 +21,8 @@ public class ProduitController {
     }
 
     @GetMapping
-    public List<Produit> lister() {
-        return produitService.listerProduits();
+    public Page<Produit> lister(Pageable pageable) {
+        return produitService.listerProduits(pageable);
     }
 
     @GetMapping("/{id}")
