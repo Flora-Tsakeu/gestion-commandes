@@ -38,6 +38,10 @@ public class Produit {
     @Size(max = 40, message = "la categorie ne peut pas depasser 40 caracteres")
     private String categorie;
 
+    @NotNull
+    @Min(value = 0, message = "le seuil d'alerte ne peut pas etre negatif")
+    private Integer seuilAlerte = 5;
+
     public Produit() {
     }
 
@@ -99,5 +103,13 @@ public class Produit {
 
     public void setCategorie(String categorie) {
         this.categorie = categorie;
+    }
+
+    public Integer getSeuilAlerte() {
+        return seuilAlerte;
+    }
+
+    public void setSeuilAlerte(Integer seuilAlerte) {
+        this.seuilAlerte = seuilAlerte;
     }
 }

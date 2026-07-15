@@ -29,8 +29,11 @@ public class ProduitController {
     }
 
     @GetMapping("/stock-faible")
-    public List<Produit> listerStockFaible(@RequestParam(defaultValue = "5") int seuil) {
-        return produitService.listerStockFaible(seuil);
+    public List<Produit> listerStockFaible(@RequestParam(required = false) Integer seuil) {
+        if (seuil != null) {
+            return produitService.listerStockFaible(seuil);
+        }
+        return produitService.listerEnDessousDeLeurSeuilAlerte();
     }
 
     @GetMapping("/{id}")

@@ -68,5 +68,9 @@ public class ProduitService {
         return produitRepository.findByQuantiteStockLessThanEqual(seuil);
     }
 
+    public List<Produit> listerEnDessousDeLeurSeuilAlerte() {
+        return produitRepository.findEnDessousDeLeurSeuilAlerte();
+    }
+
     
 }
