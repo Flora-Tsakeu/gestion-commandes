@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.service;
 
+import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
@@ -110,6 +111,29 @@ class ProduitServiceTest {
 
         assertThat(resultat.getContent()).hasSize(1);
         assertThat(resultat.getContent().get(0).getCategorie()).isEqualTo("peripheriques");
+    }
+
+    @Test
+    void doitRemonterLesProduitsSousLeurPropreSeuilAlerte() {
+        Produit stockCritique = new Produit("CLAV-004", "Clavier premium", new BigDecimal("89.00"), 1);
+        stockCritique.setSeuilAlerte(3);
+        when(produitRepository.findEnDessousDeLeurSeuilAlerte()).thenReturn(List.of(stockCritique));
+
+        List<Produit> resultat = produitService.listerEnDessousDeLeurSeuilAlerte();
+
+        assertThat(resultat).hasSize(1);
+        assertThat(resultat.get(0).getReference()).isEqualTo("CLAV-004");
+    }
+
+    @Test
+    void doitResumerLaValeurDuStockParCategorie() {
+        ResumeStockCategorie resume = new ResumeStockCategorie("peripheriques", 3L, new BigDecimal("450.00"));
+        when(produitRepository.resumerStockParCategorie()).thenReturn(List.of(resume));
+
+        List<ResumeStockCategorie> resultat = produitService.resumerStockParCategorie();
+
+        assertThat(resultat).hasSize(1);
+        assertThat(resultat.get(0).getValeurStockTotaleHt()).isEqualByComparingTo("450.00");
     }
 
    
