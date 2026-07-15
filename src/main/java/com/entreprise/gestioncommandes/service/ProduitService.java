@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
+import com.entreprise.gestioncommandes.exception.ReferenceProduitDejaUtiliseeException;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
@@ -44,6 +45,9 @@ public class ProduitService {
 
 
     public Produit creerProduit(Produit produit) {
+        produitRepository.findByReference(produit.getReference()).ifPresent(existant -> {
+            throw new ReferenceProduitDejaUtiliseeException(produit.getReference());
+        });
         Produit enregistre = produitRepository.save(produit);
         log.info("produit cree, reference={}, stock initial={}", enregistre.getReference(), enregistre.getQuantiteStock());
         return enregistre;
