@@ -2,8 +2,10 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
+import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
+import com.entreprise.gestioncommandes.model.LigneCommande;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,5 +79,33 @@ class CommandeServiceTest {
         assertThatThrownBy(() -> commandeService.creerCommande(requete))
                 .isInstanceOf(StockInsuffisantException.class)
                 .hasMessageContaining("ECR-027");
+    }
+
+    @Test
+    void doitAutoriserLAnnulationDansLeDelai() {
+        Commande commande = new Commande("Societe Dubois");
+        commande.setId(10L);
+        commande.setDateCreation(LocalDateTime.now().minusDays(5));
+        commande.setLignes(List.of(new LigneCommande(ecran, 1)));
+        when(commandeRepository.findById(10L)).thenReturn(Optional.of(commande));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commandeRepository.save(any(Commande.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Commande resultat = commandeService.annuler(10L);
+
+        assertThat(resultat.isAnnulee()).isTrue();
+    }
+
+    @Test
+    void doitRefuserLAnnulationAuDelaDuDelai() {
+        Commande commande = new Commande("Societe Dubois");
+        commande.setId(11L);
+        commande.setDateCreation(LocalDateTime.now().minusDays(45));
+        commande.setLignes(List.of(new LigneCommande(ecran, 1)));
+        when(commandeRepository.findById(11L)).thenReturn(Optional.of(commande));
+
+        assertThatThrownBy(() -> commandeService.annuler(11L))
+                .isInstanceOf(AnnulationImpossibleException.class)
+                .hasMessageContaining("11");
     }
 }
