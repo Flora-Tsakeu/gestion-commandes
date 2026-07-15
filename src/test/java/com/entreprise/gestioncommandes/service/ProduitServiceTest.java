@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
+import com.entreprise.gestioncommandes.exception.ReferenceProduitDejaUtiliseeException;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,12 +44,22 @@ class ProduitServiceTest {
 
     @Test
     void doitCreerUnProduitEtLeRetourner() {
+        when(produitRepository.findByReference("CLAV-001")).thenReturn(Optional.empty());
         when(produitRepository.save(any(Produit.class))).thenReturn(clavier);
 
         Produit resultat = produitService.creerProduit(clavier);
 
         assertThat(resultat.getReference()).isEqualTo("CLAV-001");
         assertThat(resultat.getQuantiteStock()).isEqualTo(25);
+    }
+
+    @Test
+    void doitRefuserLaCreationSiReferenceDejaUtilisee() {
+        when(produitRepository.findByReference("CLAV-001")).thenReturn(Optional.of(clavier));
+
+        assertThatThrownBy(() -> produitService.creerProduit(clavier))
+                .isInstanceOf(ReferenceProduitDejaUtiliseeException.class)
+                .hasMessageContaining("CLAV-001");
     }
 
     @Test
