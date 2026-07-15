@@ -3,6 +3,7 @@ package com.entreprise.gestioncommandes.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class CommandeRequest {
     @NotEmpty(message = "une commande doit contenir au moins une ligne")
     @Valid
     private List<LigneCommandeRequest> lignes;
+
+    @Size(max = 500, message = "les notes ne peuvent pas depasser 500 caracteres")
+    private String notes;
 
     public String getClient() {
         return client;
@@ -29,5 +33,13 @@ public class CommandeRequest {
 
     public void setLignes(List<LigneCommandeRequest> lignes) {
         this.lignes = lignes;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

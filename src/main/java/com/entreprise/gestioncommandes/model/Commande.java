@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,6 +33,9 @@ public class Commande {
     private BigDecimal montantTotalTtc = BigDecimal.ZERO;
 
     private boolean annulee = false;
+
+    @Size(max = 500, message = "les notes ne peuvent pas depasser 500 caracteres")
+    private String notes;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -98,5 +102,13 @@ public class Commande {
 
     public void setAnnulee(boolean annulee) {
         this.annulee = annulee;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

@@ -58,6 +58,7 @@ public class CommandeService {
 
         commande.setMontantTotalHt(CalculateurTva.arrondirDeuxDecimales(totalHt));
         commande.setMontantTotalTtc(CalculateurTva.calculerMontantTtc(totalHt));
+        commande.setNotes(requete.getNotes());
         
         Commande enregistree = commandeRepository.save(commande);
         log.info("commande creee, client={}, nbLignes={}, totalTtc={}",
