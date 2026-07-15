@@ -35,6 +35,9 @@ public class Produit {
     @Min(value = 0, message = "le stock ne peut pas etre negatif")
     private Integer quantiteStock;
 
+    @Size(max = 40, message = "la categorie ne peut pas depasser 40 caracteres")
+    private String categorie;
+
     public Produit() {
     }
 
@@ -83,5 +86,13 @@ public class Produit {
 
     public void setQuantiteStock(Integer quantiteStock) {
         this.quantiteStock = quantiteStock;
+    }
+
+    public String getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(String categorie) {
+        this.categorie = categorie;
     }
 }
