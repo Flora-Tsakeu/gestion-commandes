@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.service;
 
+import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
@@ -70,6 +71,10 @@ public class ProduitService {
 
     public List<Produit> listerEnDessousDeLeurSeuilAlerte() {
         return produitRepository.findEnDessousDeLeurSeuilAlerte();
+    }
+
+    public List<ResumeStockCategorie> resumerStockParCategorie() {
+        return produitRepository.resumerStockParCategorie();
     }
 
     

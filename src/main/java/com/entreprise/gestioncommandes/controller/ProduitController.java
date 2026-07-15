@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.controller;
 
+import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.service.ProduitService;
 import jakarta.validation.Valid;
@@ -34,6 +35,11 @@ public class ProduitController {
             return produitService.listerStockFaible(seuil);
         }
         return produitService.listerEnDessousDeLeurSeuilAlerte();
+    }
+
+    @GetMapping("/resume-stock")
+    public List<ResumeStockCategorie> resumerStockParCategorie() {
+        return produitService.resumerStockParCategorie();
     }
 
     @GetMapping("/{id}")

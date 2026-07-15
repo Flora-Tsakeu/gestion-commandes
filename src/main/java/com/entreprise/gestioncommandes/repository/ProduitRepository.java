@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.repository;
 
+import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.model.Produit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,5 +20,10 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
 
     @Query("select p from Produit p where p.quantiteStock <= p.seuilAlerte")
     List<Produit> findEnDessousDeLeurSeuilAlerte();
+
+    @Query("select new com.entreprise.gestioncommandes.dto.ResumeStockCategorie("
+            + "p.categorie, count(p), sum(p.prixUnitaireHt * p.quantiteStock)) "
+            + "from Produit p group by p.categorie")
+    List<ResumeStockCategorie> resumerStockParCategorie();
 
 }
