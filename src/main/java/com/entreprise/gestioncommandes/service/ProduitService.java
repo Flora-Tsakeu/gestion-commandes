@@ -26,6 +26,10 @@ public class ProduitService {
         return produitRepository.findAll(pageable);
     }
 
+    public Page<Produit> listerParCategorie(String categorie, Pageable pageable) {
+        return produitRepository.findByCategorie(categorie, pageable);
+    }
+
     public Produit recupererParId(Long id) {
         return produitRepository.findById(id)
                 .orElseThrow(() -> new ProduitIntrouvableException(id));

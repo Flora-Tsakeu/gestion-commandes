@@ -21,7 +21,10 @@ public class ProduitController {
     }
 
     @GetMapping
-    public Page<Produit> lister(Pageable pageable) {
+    public Page<Produit> lister(Pageable pageable, @RequestParam(required = false) String categorie) {
+        if (categorie != null && !categorie.isBlank()) {
+            return produitService.listerParCategorie(categorie, pageable);
+        }
         return produitService.listerProduits(pageable);
     }
 
