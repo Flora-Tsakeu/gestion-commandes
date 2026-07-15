@@ -81,5 +81,17 @@ public class ProduitService {
         return produitRepository.resumerStockParCategorie();
     }
 
+    public Produit reapprovisionner(Long id, int quantiteAjoutee) {
+        if (quantiteAjoutee <= 0) {
+            throw new IllegalArgumentException("la quantite reapprovisionnee doit etre superieure a zero");
+        }
+        Produit produit = recupererParId(id);
+        produit.setQuantiteStock(produit.getQuantiteStock() + quantiteAjoutee);
+        Produit maj = produitRepository.save(produit);
+        log.info("reapprovisionnement, reference={}, quantite ajoutee={}, nouveau stock={}",
+                maj.getReference(), quantiteAjoutee, maj.getQuantiteStock());
+        return maj;
+    }
+
     
 }

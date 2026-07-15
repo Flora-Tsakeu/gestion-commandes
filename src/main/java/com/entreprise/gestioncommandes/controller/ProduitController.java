@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.controller;
 
+import com.entreprise.gestioncommandes.dto.ReapprovisionnementRequest;
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.service.ProduitService;
@@ -61,6 +62,11 @@ public class ProduitController {
     @PutMapping("/{id}")
     public Produit modifier(@PathVariable Long id, @Valid @RequestBody Produit produit) {
         return produitService.mettreAJour(id, produit);
+    }
+
+    @PatchMapping("/{id}/reapprovisionnement")
+    public Produit reapprovisionner(@PathVariable Long id, @Valid @RequestBody ReapprovisionnementRequest requete) {
+        return produitService.reapprovisionner(id, requete.getQuantite());
     }
 
     @DeleteMapping("/{id}")
