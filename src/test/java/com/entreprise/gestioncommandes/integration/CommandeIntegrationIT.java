@@ -113,5 +113,33 @@ class CommandeIntegrationIT {
                 .andExpect(jsonPath("$.quantiteStock").value(15));
     }
 
+    @Test
+    void doitEnregistrerLesNotesEtLesRetrouverSurLaPeriode() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Ouest",
+                  "notes": "livraison en deux colis, prevenir avant 9h",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.notes").value("livraison en deux colis, prevenir avant 9h"));
+
+        String debut = java.time.LocalDateTime.now().minusHours(1).toString();
+        String fin = java.time.LocalDateTime.now().plusHours(1).toString();
+
+        mockMvc.perform(get("/api/commandes/periode")
+                        .param("debut", debut)
+                        .param("fin", fin))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].client").value("Boutique Ouest"));
+    }
+
 
 }
