@@ -1,6 +1,7 @@
 package com.entreprise.gestioncommandes.controller;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
+import com.entreprise.gestioncommandes.dto.NotesRequest;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
 import jakarta.validation.Valid;
@@ -55,5 +56,10 @@ public class CommandeController {
     @PostMapping("/{id}/annulation")
     public Commande annuler(@PathVariable Long id) {
         return commandeService.annuler(id);
+    }
+
+    @PatchMapping("/{id}/notes")
+    public Commande modifierNotes(@PathVariable Long id, @Valid @RequestBody NotesRequest requete) {
+        return commandeService.modifierNotes(id, requete.getNotes());
     }
 }

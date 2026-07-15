@@ -92,6 +92,14 @@ public class CommandeService {
         return commandeRepository.findByDateCreationBetweenOrderByDateCreationDesc(debut, fin);
     }
 
+    public Commande modifierNotes(Long id, String notes) {
+        Commande commande = recupererParId(id);
+        commande.setNotes(notes);
+        Commande maj = commandeRepository.save(commande);
+        log.info("notes mises a jour, commande id={}", id);
+        return maj;
+    }
+
     @Transactional
     public Commande annuler(Long id) {
         Commande commande = recupererParId(id);
