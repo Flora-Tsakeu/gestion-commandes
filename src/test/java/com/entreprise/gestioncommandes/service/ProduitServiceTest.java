@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,6 +97,19 @@ class ProduitServiceTest {
 
         assertThat(resultat).hasSize(1);
         assertThat(resultat.get(0).getReference()).isEqualTo("CLAV-002");
+    }
+
+    @Test
+    void doitFiltrerLesProduitsParCategorie() {
+        Produit peripherique = new Produit("CLAV-003", "Clavier compact", new BigDecimal("39.90"), 8, "peripheriques");
+        Pageable pageable = PageRequest.of(0, 10);
+        when(produitRepository.findByCategorie(eq("peripheriques"), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(peripherique)));
+
+        var resultat = produitService.listerParCategorie("peripheriques", pageable);
+
+        assertThat(resultat.getContent()).hasSize(1);
+        assertThat(resultat.getContent().get(0).getCategorie()).isEqualTo("peripheriques");
     }
 
    

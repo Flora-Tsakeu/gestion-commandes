@@ -48,6 +48,11 @@ public class Produit {
         this.quantiteStock = quantiteStock;
     }
 
+    public Produit(String reference, String libelle, BigDecimal prixUnitaireHt, Integer quantiteStock, String categorie) {
+        this(reference, libelle, prixUnitaireHt, quantiteStock);
+        this.categorie = categorie;
+    }
+
     public Long getId() {
         return id;
     }
