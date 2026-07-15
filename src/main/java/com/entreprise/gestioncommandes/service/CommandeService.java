@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -75,6 +76,10 @@ public class CommandeService {
 
     public List<Commande> listerParClient(String client) {
         return commandeRepository.findByClientOrderByDateCreationDesc(client);
+    }
+
+    public List<Commande> listerParPeriode(LocalDateTime debut, LocalDateTime fin) {
+        return commandeRepository.findByDateCreationBetweenOrderByDateCreationDesc(debut, fin);
     }
 
     @Transactional

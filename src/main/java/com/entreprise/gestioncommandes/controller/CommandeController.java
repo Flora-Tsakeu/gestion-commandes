@@ -4,9 +4,12 @@ import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
 import jakarta.validation.Valid;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,6 +39,13 @@ public class CommandeController {
             return commandeService.listerParClient(client);
         }
         return commandeService.listerToutes();
+    }
+
+     @GetMapping("/periode")
+    public List<Commande> listerParPeriode(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime debut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
+        return commandeService.listerParPeriode(debut, fin);
     }
 
     @PostMapping("/{id}/annulation")
