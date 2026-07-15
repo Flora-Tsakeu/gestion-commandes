@@ -28,6 +28,13 @@ public class CommandeController {
         return commandeService.creerCommande(requete);
     }
 
+    @GetMapping("/periode")
+    public List<Commande> listerParPeriode(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime debut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
+        return commandeService.listerParPeriode(debut, fin);
+    }
+
     @GetMapping("/{id}")
     public Commande recuperer(@PathVariable Long id) {
         return commandeService.recupererParId(id);
@@ -43,13 +50,6 @@ public class CommandeController {
             return commandeService.listerParStatutAnnulation(annulee);
         }
         return commandeService.listerToutes();
-    }
-
-     @GetMapping("/periode")
-    public List<Commande> listerParPeriode(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime debut,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
-        return commandeService.listerParPeriode(debut, fin);
     }
 
     @PostMapping("/{id}/annulation")
