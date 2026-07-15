@@ -147,5 +147,21 @@ class ProduitServiceTest {
         assertThat(resultat.get(0).getValeurStockTotaleHt()).isEqualByComparingTo("450.00");
     }
 
+    @Test
+    void doitAugmenterLeStockLorsDuReapprovisionnement() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Produit resultat = produitService.reapprovisionner(1L, 15);
+
+        assertThat(resultat.getQuantiteStock()).isEqualTo(40);
+    }
+
+    @Test
+    void doitRefuserUnReapprovisionnementNegatifOuNul() {
+        assertThatThrownBy(() -> produitService.reapprovisionner(1L, 0))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
    
 }
