@@ -1,6 +1,7 @@
 package com.entreprise.gestioncommandes.integration;
 
 import com.entreprise.gestioncommandes.model.Produit;
+import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +28,15 @@ class ProduitIntegrationIT {
     @Autowired
     private ProduitRepository produitRepository;
 
+    @Autowired
+    private CommandeRepository commandeRepository;
+
+
     private Long idEcran;
 
     @BeforeEach
     void chargerDonnees() {
+        commandeRepository.deleteAll();
         produitRepository.deleteAll();
         Produit ecran = new Produit("ECR-030", "Ecran 30 pouces", new BigDecimal("249.00"), 6);
         idEcran = produitRepository.save(ecran).getId();
