@@ -34,9 +34,13 @@ public class CommandeController {
     }
 
     @GetMapping
-    public List<Commande> lister(@RequestParam(required = false) String client) {
+    public List<Commande> lister(@RequestParam(required = false) String client,
+                                  @RequestParam(required = false) Boolean annulee) {
         if (client != null && !client.isBlank()) {
             return commandeService.listerParClient(client);
+        }
+        if (annulee != null) {
+            return commandeService.listerParStatutAnnulation(annulee);
         }
         return commandeService.listerToutes();
     }

@@ -84,6 +84,10 @@ public class CommandeService {
         return commandeRepository.findByClientOrderByDateCreationDesc(client);
     }
 
+    public List<Commande> listerParStatutAnnulation(boolean annulee) {
+        return commandeRepository.findByAnnuleeOrderByDateCreationDesc(annulee);
+    }
+
     public List<Commande> listerParPeriode(LocalDateTime debut, LocalDateTime fin) {
         return commandeRepository.findByDateCreationBetweenOrderByDateCreationDesc(debut, fin);
     }

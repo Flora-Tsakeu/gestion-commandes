@@ -12,5 +12,7 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
 
     List<Commande> findAllByOrderByDateCreationDesc();
 
+    List<Commande> findByAnnuleeOrderByDateCreationDesc(boolean annulee);
+
     List<Commande> findByDateCreationBetweenOrderByDateCreationDesc(LocalDateTime debut, LocalDateTime fin);
 }
