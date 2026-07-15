@@ -34,6 +34,8 @@ public class Commande {
 
     private boolean annulee = false;
 
+    private String numeroSuivi;
+
     @Size(max = 500, message = "les notes ne peuvent pas depasser 500 caracteres")
     private String notes;
 
@@ -102,6 +104,14 @@ public class Commande {
 
     public void setAnnulee(boolean annulee) {
         this.annulee = annulee;
+    }
+
+    public String getNumeroSuivi() {
+        return numeroSuivi;
+    }
+
+    public void setNumeroSuivi(String numeroSuivi) {
+        this.numeroSuivi = numeroSuivi;
     }
 
     public String getNotes() {

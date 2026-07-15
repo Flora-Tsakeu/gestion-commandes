@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
+import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
@@ -17,12 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CommandeService {
 
     private static final Logger log = LoggerFactory.getLogger(CommandeService.class);
+    private static final int DELAI_MAX_ANNULATION_JOURS = 30;
     
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
@@ -58,6 +62,7 @@ public class CommandeService {
 
         commande.setMontantTotalHt(CalculateurTva.arrondirDeuxDecimales(totalHt));
         commande.setMontantTotalTtc(CalculateurTva.calculerMontantTtc(totalHt));
+        commande.setNumeroSuivi("CMD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         commande.setNotes(requete.getNotes());
         
         Commande enregistree = commandeRepository.save(commande);
@@ -89,6 +94,11 @@ public class CommandeService {
         if (commande.isAnnulee()) {
             log.warn("tentative d'annulation d'une commande deja annulee, id={}", id);
             return commande;
+        }
+
+        long joursEcoules = ChronoUnit.DAYS.between(commande.getDateCreation(), LocalDateTime.now());
+        if (joursEcoules > DELAI_MAX_ANNULATION_JOURS) {
+            throw new AnnulationImpossibleException(id, DELAI_MAX_ANNULATION_JOURS);
         }
 
         for (LigneCommande ligne : commande.getLignes()) {

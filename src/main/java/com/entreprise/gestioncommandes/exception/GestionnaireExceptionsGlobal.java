@@ -28,6 +28,11 @@ public class GestionnaireExceptionsGlobal {
         return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(AnnulationImpossibleException.class)
+    public ResponseEntity<Map<String, Object>> gererAnnulationImpossible(AnnulationImpossibleException ex) {
+        return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> gererValidation(MethodArgumentNotValidException ex) {
         String details = ex.getBindingResult().getFieldErrors().stream()
