@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
+import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
@@ -94,6 +95,13 @@ public class CommandeService {
 
     public List<Commande> listerParPeriode(LocalDateTime debut, LocalDateTime fin) {
         return commandeRepository.findByDateCreationBetweenOrderByDateCreationDesc(debut, fin);
+    }
+
+    public StatistiquesCommandes calculerStatistiques() {
+        long actives = commandeRepository.countByAnnulee(false);
+        long annulees = commandeRepository.countByAnnulee(true);
+        BigDecimal chiffreAffaires = commandeRepository.calculerChiffreAffairesActif();
+        return new StatistiquesCommandes(actives, annulees, chiffreAffaires);
     }
 
     public Commande modifierNotes(Long id, String notes) {

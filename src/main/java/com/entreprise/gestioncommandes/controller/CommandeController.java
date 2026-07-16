@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.controller;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.NotesRequest;
+import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
 import jakarta.validation.Valid;
@@ -34,6 +35,11 @@ public class CommandeController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime debut,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
         return commandeService.listerParPeriode(debut, fin);
+    }
+
+    @GetMapping("/statistiques")
+    public StatistiquesCommandes statistiques() {
+        return commandeService.calculerStatistiques();
     }
 
     @GetMapping("/{id}")
