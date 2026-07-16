@@ -2,6 +2,8 @@ package com.entreprise.gestioncommandes.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,6 +40,9 @@ public class Commande {
 
     @Size(max = 500, message = "les notes ne peuvent pas depasser 500 caracteres")
     private String notes;
+
+    @Enumerated(EnumType.STRING)
+    private ModeLivraison modeLivraison = ModeLivraison.STANDARD;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -120,5 +125,13 @@ public class Commande {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public ModeLivraison getModeLivraison() {
+        return modeLivraison;
+    }
+
+    public void setModeLivraison(ModeLivraison modeLivraison) {
+        this.modeLivraison = modeLivraison;
     }
 }
