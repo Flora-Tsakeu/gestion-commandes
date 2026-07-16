@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,6 +11,7 @@ public class LigneCommandeRequest {
 
     @NotNull
     @Min(value = 1, message = "la quantite doit etre superieure a zero")
+    @Max(value = 100, message = "la quantite ne peut pas depasser 100 unites par ligne")
     private Integer quantite;
 
     public Long getProduitId() {
