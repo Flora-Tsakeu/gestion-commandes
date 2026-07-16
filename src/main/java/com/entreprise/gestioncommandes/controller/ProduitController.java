@@ -21,15 +21,7 @@ public class ProduitController {
     public ProduitController(ProduitService produitService) {
         this.produitService = produitService;
     }
-
-    @GetMapping
-    public Page<Produit> lister(Pageable pageable, @RequestParam(required = false) String categorie) {
-        if (categorie != null && !categorie.isBlank()) {
-            return produitService.listerParCategorie(categorie, pageable);
-        }
-        return produitService.listerProduits(pageable);
-    }
-
+ 
     @GetMapping
     public Page<Produit> lister(Pageable pageable,
                                  @RequestParam(required = false) String categorie,
