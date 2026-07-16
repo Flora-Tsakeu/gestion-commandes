@@ -163,5 +163,17 @@ class ProduitServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void doitRechercherLesProduitsParLibelleSansTenirCompteDeLaCasse() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(produitRepository.findByLibelleContainingIgnoreCase(eq("mecanique"), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(clavier)));
+
+        var resultat = produitService.rechercherParLibelle("mecanique", pageable);
+
+        assertThat(resultat.getContent()).hasSize(1);
+        assertThat(resultat.getContent().get(0).getReference()).isEqualTo("CLAV-001");
+    }
+
    
 }
