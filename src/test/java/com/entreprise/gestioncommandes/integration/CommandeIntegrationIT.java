@@ -141,5 +141,81 @@ class CommandeIntegrationIT {
                 .andExpect(jsonPath("$[0].client").value("Boutique Ouest"));
     }
 
+     @Test
+    void doitAjouterLesFraisDeLivraisonExpressAuTotalTtc() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "modeLivraison": "EXPRESS",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.modeLivraison").value("EXPRESS"))
+                .andExpect(jsonPath("$.montantTotalTtc").value(45.78));
+    }
+
+    @Test
+    void doitRefuserUneQuantiteDeLigneSuperieureAuMaximumAutorise() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 150 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void doitExposerLesStatistiquesGlobalesApresCreationEtAnnulation() throws Exception {
+        String premiereCommande = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 2 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(premiereCommande))
+                .andExpect(status().isCreated());
+
+        String deuxiemeCommande = """
+                {
+                  "client": "Boutique Sud",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+        String reponse = mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(deuxiemeCommande))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Long idDeuxiemeCommande = objectMapper.readTree(reponse).get("id").asLong();
+
+        mockMvc.perform(post("/api/commandes/" + idDeuxiemeCommande + "/annulation"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/commandes/statistiques"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombreCommandesActives").value(1))
+                .andExpect(jsonPath("$.nombreCommandesAnnulees").value(1));
+    }
+
 
 }
