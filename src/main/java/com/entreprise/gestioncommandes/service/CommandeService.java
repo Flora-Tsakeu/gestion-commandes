@@ -8,6 +8,7 @@ import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
+import com.entreprise.gestioncommandes.model.ModeLivraison;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
@@ -61,7 +62,10 @@ public class CommandeService {
         }
 
         commande.setMontantTotalHt(CalculateurTva.arrondirDeuxDecimales(totalHt));
-        commande.setMontantTotalTtc(CalculateurTva.calculerMontantTtc(totalHt));
+        ModeLivraison modeLivraison = requete.getModeLivraison() != null ? requete.getModeLivraison() : ModeLivraison.STANDARD;
+        commande.setModeLivraison(modeLivraison);
+        BigDecimal totalTtcAvecLivraison = CalculateurTva.calculerMontantTtc(totalHt).add(modeLivraison.getFraisHt());
+        commande.setMontantTotalTtc(CalculateurTva.arrondirDeuxDecimales(totalTtcAvecLivraison));
         commande.setNumeroSuivi("CMD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         commande.setNotes(requete.getNotes());
         
