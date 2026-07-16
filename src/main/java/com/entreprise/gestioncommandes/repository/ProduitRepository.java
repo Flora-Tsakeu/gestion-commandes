@@ -26,4 +26,6 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
             + "from Produit p group by p.categorie")
     List<ResumeStockCategorie> resumerStockParCategorie();
 
+    Page<Produit> findByLibelleContainingIgnoreCase(String texte, Pageable pageable);
+
 }

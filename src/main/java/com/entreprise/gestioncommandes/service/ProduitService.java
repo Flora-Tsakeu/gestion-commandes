@@ -32,6 +32,10 @@ public class ProduitService {
         return produitRepository.findByCategorie(categorie, pageable);
     }
 
+    public Page<Produit> rechercherParLibelle(String texte, Pageable pageable) {
+        return produitRepository.findByLibelleContainingIgnoreCase(texte, pageable);
+    }
+
     public Produit recupererParId(Long id) {
         return produitRepository.findById(id)
                 .orElseThrow(() -> new ProduitIntrouvableException(id));

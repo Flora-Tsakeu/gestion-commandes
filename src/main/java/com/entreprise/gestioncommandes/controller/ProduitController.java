@@ -30,6 +30,19 @@ public class ProduitController {
         return produitService.listerProduits(pageable);
     }
 
+    @GetMapping
+    public Page<Produit> lister(Pageable pageable,
+                                 @RequestParam(required = false) String categorie,
+                                 @RequestParam(required = false) String recherche) {
+        if (recherche != null && !recherche.isBlank()) {
+            return produitService.rechercherParLibelle(recherche, pageable);
+        }
+        if (categorie != null && !categorie.isBlank()) {
+            return produitService.listerParCategorie(categorie, pageable);
+        }
+        return produitService.listerProduits(pageable);
+    }
+
     @GetMapping("/stock-faible")
     public List<Produit> listerStockFaible(@RequestParam(required = false) Integer seuil) {
         if (seuil != null) {
