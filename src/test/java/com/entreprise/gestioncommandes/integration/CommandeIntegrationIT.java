@@ -13,8 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -215,6 +217,46 @@ class CommandeIntegrationIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nombreCommandesActives").value(1))
                 .andExpect(jsonPath("$.nombreCommandesAnnulees").value(1));
+    }
+
+    @Test
+    void doitRefuserUneAdresseEmailClientInvalide() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "clientEmail": "adresse-invalide",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void doitExporterLesCommandesActivesEnCsv() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/commandes/export"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("numeroSuivi;client;dateCreation")))
+                .andExpect(content().string(containsString("Boutique Nord")));
     }
 
 
