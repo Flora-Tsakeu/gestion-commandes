@@ -15,6 +15,8 @@ import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +95,14 @@ public class CommandeService {
 
     public List<Commande> listerParClient(String client) {
         return commandeRepository.findByClientOrderByDateCreationDesc(client);
+    }
+
+    public Page<Commande> listerToutesPagine(Pageable pageable) {
+        return commandeRepository.findAllByOrderByDateCreationDesc(pageable);
+    }
+
+    public Page<Commande> listerParClientPagine(String client, Pageable pageable) {
+        return commandeRepository.findByClientOrderByDateCreationDesc(client, pageable);
     }
 
     public List<Commande> listerParStatutAnnulation(boolean annulee) {

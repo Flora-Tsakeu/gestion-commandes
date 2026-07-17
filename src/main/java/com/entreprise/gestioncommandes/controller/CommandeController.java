@@ -7,6 +7,8 @@ import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +59,14 @@ public class CommandeController {
             return commandeService.listerParStatutAnnulation(annulee);
         }
         return commandeService.listerToutes();
+    }
+
+    @GetMapping("/paginees")
+    public Page<Commande> listerPaginees(Pageable pageable, @RequestParam(required = false) String client) {
+        if (client != null && !client.isBlank()) {
+            return commandeService.listerParClientPagine(client, pageable);
+        }
+        return commandeService.listerToutesPagine(pageable);
     }
 
     @PostMapping("/{id}/annulation")
