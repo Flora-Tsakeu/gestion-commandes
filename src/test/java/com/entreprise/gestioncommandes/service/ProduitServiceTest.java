@@ -2,8 +2,10 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
+import com.entreprise.gestioncommandes.exception.ProduitReferenceParCommandeException;
 import com.entreprise.gestioncommandes.exception.ReferenceProduitDejaUtiliseeException;
 import com.entreprise.gestioncommandes.model.Produit;
+import com.entreprise.gestioncommandes.repository.LigneCommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,9 @@ class ProduitServiceTest {
 
     @Mock
     private ProduitRepository produitRepository;
+
+    @Mock
+    private LigneCommandeRepository ligneCommandeRepository;
 
     @InjectMocks
     private ProduitService produitService;
@@ -173,6 +178,26 @@ class ProduitServiceTest {
 
         assertThat(resultat.getContent()).hasSize(1);
         assertThat(resultat.getContent().get(0).getReference()).isEqualTo("CLAV-001");
+    }
+
+     @Test
+    void doitSupprimerUnProduitNonReference() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+        when(ligneCommandeRepository.existsByProduitId(1L)).thenReturn(false);
+
+        produitService.supprimer(1L);
+
+        org.mockito.Mockito.verify(produitRepository).delete(clavier);
+    }
+
+    @Test
+    void doitRefuserLaSuppressionDunProduitReferenceParUneCommande() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+        when(ligneCommandeRepository.existsByProduitId(1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> produitService.supprimer(1L))
+                .isInstanceOf(ProduitReferenceParCommandeException.class)
+                .hasMessageContaining("1");
     }
 
    
