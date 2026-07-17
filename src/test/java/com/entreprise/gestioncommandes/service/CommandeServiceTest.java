@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -110,5 +111,25 @@ class CommandeServiceTest {
         assertThatThrownBy(() -> commandeService.annuler(11L))
                 .isInstanceOf(AnnulationImpossibleException.class)
                 .hasMessageContaining("11");
+    }
+
+    @Test
+    void doitDeclencherLaNotificationDeCreationSiEmailFourni() {
+        when(produitRepository.findById(2L)).thenReturn(Optional.of(ecran));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commandeRepository.save(any(Commande.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        requete.setClientEmail("contact@societe-dubois.fr");
+        LigneCommandeRequest ligne = new LigneCommandeRequest();
+        ligne.setProduitId(2L);
+        ligne.setQuantite(1);
+        requete.setLignes(List.of(ligne));
+
+        Commande resultat = commandeService.creerCommande(requete);
+
+        assertThat(resultat.getClientEmail()).isEqualTo("contact@societe-dubois.fr");
+        verify(notificationService).notifierCreation(resultat);
     }
 }
