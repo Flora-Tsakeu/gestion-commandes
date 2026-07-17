@@ -32,10 +32,13 @@ public class CommandeService {
     
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
+    private final NotificationService notificationService;
 
-    public CommandeService(CommandeRepository commandeRepository, ProduitRepository produitRepository) {
+    public CommandeService(CommandeRepository commandeRepository, ProduitRepository produitRepository,
+                            NotificationService notificationService) {
         this.commandeRepository = commandeRepository;
         this.produitRepository = produitRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -73,6 +76,7 @@ public class CommandeService {
         Commande enregistree = commandeRepository.save(commande);
         log.info("commande creee, client={}, nbLignes={}, totalTtc={}",
                 enregistree.getClient(), enregistree.getLignes().size(), enregistree.getMontantTotalTtc());
+        notificationService.notifierCreation(enregistree);
         return enregistree;
     }
 
@@ -134,6 +138,7 @@ public class CommandeService {
         commande.setAnnulee(true);
         Commande misAJour = commandeRepository.save(commande);
         log.info("commande annulee, id={}, stock reintegre pour {} ligne(s)", id, commande.getLignes().size());
+        notificationService.notifierAnnulation(misAJour);
         return misAJour;
     }
 }
