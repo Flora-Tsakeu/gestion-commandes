@@ -79,4 +79,12 @@ public class LigneCommande {
     public void setPrixUnitaireHtApplique(BigDecimal prixUnitaireHtApplique) {
         this.prixUnitaireHtApplique = prixUnitaireHtApplique;
     }
+
+    @jakarta.persistence.Transient
+    public BigDecimal getMontantLigneHt() {
+        if (prixUnitaireHtApplique == null || quantite == null) {
+            return BigDecimal.ZERO;
+        }
+        return prixUnitaireHtApplique.multiply(BigDecimal.valueOf(quantite));
+    }
 }
