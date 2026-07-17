@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
+import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
@@ -136,6 +137,19 @@ class CommandeServiceTest {
 
         assertThat(resultat.getClientEmail()).isEqualTo("contact@societe-dubois.fr");
         verify(notificationService).notifierCreation(resultat);
+    }
+
+    @Test
+    void doitCalculerLesStatistiquesGlobales() {
+        when(commandeRepository.countByAnnulee(false)).thenReturn(42L);
+        when(commandeRepository.countByAnnulee(true)).thenReturn(8L);
+        when(commandeRepository.calculerChiffreAffairesActif()).thenReturn(new BigDecimal("15320.40"));
+
+        StatistiquesCommandes resultat = commandeService.calculerStatistiques();
+
+        assertThat(resultat.getNombreCommandesActives()).isEqualTo(42L);
+        assertThat(resultat.getNombreCommandesAnnulees()).isEqualTo(8L);
+        assertThat(resultat.getChiffreAffairesTtc()).isEqualByComparingTo("15320.40");
     }
 
     @Test
