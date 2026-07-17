@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 public class CommandeService {
@@ -70,7 +70,7 @@ public class CommandeService {
         commande.setModeLivraison(modeLivraison);
         BigDecimal totalTtcAvecLivraison = CalculateurTva.calculerMontantTtc(totalHt).add(modeLivraison.getFraisHt());
         commande.setMontantTotalTtc(CalculateurTva.arrondirDeuxDecimales(totalTtcAvecLivraison));
-        commande.setNumeroSuivi("CMD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        commande.setNumeroSuivi(GenerateurNumeroSuivi.genererNouveauNumero());
         commande.setNotes(requete.getNotes());
         commande.setClientEmail(requete.getClientEmail());
 
