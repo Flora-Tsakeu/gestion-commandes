@@ -4,6 +4,7 @@ import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
+import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
@@ -163,5 +164,25 @@ class CommandeServiceTest {
 
         assertThat(resultat.getContent()).hasSize(1);
         assertThat(resultat.getContent().get(0).getClient()).isEqualTo("Boutique Nord");
+    }
+
+    @Test
+    void doitRetrouverUneCommandeParSonNumeroDeSuivi() {
+        Commande commande = new Commande("Boutique Nord");
+        commande.setNumeroSuivi("CMD-ABCDEF12");
+        when(commandeRepository.findByNumeroSuivi("CMD-ABCDEF12")).thenReturn(Optional.of(commande));
+
+        Commande resultat = commandeService.recupererParNumeroSuivi("CMD-ABCDEF12");
+
+        assertThat(resultat.getClient()).isEqualTo("Boutique Nord");
+    }
+
+    @Test
+    void doitLeverUneExceptionSiNumeroDeSuiviInconnu() {
+        when(commandeRepository.findByNumeroSuivi("CMD-INEXISTANT")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> commandeService.recupererParNumeroSuivi("CMD-INEXISTANT"))
+                .isInstanceOf(CommandeIntrouvableException.class)
+                .hasMessageContaining("CMD-INEXISTANT");
     }
 }
