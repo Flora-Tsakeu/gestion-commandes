@@ -3,11 +3,15 @@ package com.entreprise.gestioncommandes.controller;
 import com.entreprise.gestioncommandes.dto.ReapprovisionnementRequest;
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.model.Produit;
+import com.entreprise.gestioncommandes.service.ExportProduitService;
 import com.entreprise.gestioncommandes.service.ProduitService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +21,11 @@ import java.util.List;
 public class ProduitController {
 
     private final ProduitService produitService;
+    private final ExportProduitService exportProduitService;
 
-    public ProduitController(ProduitService produitService) {
+    public ProduitController(ProduitService produitService, ExportProduitService exportProduitService) {
         this.produitService = produitService;
+        this.exportProduitService = exportProduitService;
     }
  
     @GetMapping
@@ -46,6 +52,15 @@ public class ProduitController {
     @GetMapping("/resume-stock")
     public List<ResumeStockCategorie> resumerStockParCategorie() {
         return produitService.resumerStockParCategorie();
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<String> exporter() {
+        String csv = exportProduitService.exporterCatalogueEnCsv();
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"catalogue-produits.csv\"")
+                .body(csv);
     }
 
     @GetMapping("/{id}")
