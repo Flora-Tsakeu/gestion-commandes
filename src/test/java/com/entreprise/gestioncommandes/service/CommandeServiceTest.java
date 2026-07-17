@@ -15,6 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,6 +28,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -131,5 +136,18 @@ class CommandeServiceTest {
 
         assertThat(resultat.getClientEmail()).isEqualTo("contact@societe-dubois.fr");
         verify(notificationService).notifierCreation(resultat);
+    }
+
+    @Test
+    void doitListerLesCommandesDunClientDeFaconPaginee() {
+        Commande commande = new Commande("Boutique Nord");
+        Pageable pageable = PageRequest.of(0, 5);
+        when(commandeRepository.findByClientOrderByDateCreationDesc(eq("Boutique Nord"), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(commande)));
+
+        Page<Commande> resultat = commandeService.listerParClientPagine("Boutique Nord", pageable);
+
+        assertThat(resultat.getContent()).hasSize(1);
+        assertThat(resultat.getContent().get(0).getClient()).isEqualTo("Boutique Nord");
     }
 }
