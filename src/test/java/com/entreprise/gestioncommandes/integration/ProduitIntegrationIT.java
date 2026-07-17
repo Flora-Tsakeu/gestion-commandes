@@ -12,9 +12,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,5 +74,38 @@ class ProduitIntegrationIT {
                         .contentType(APPLICATION_JSON)
                         .content(corps))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void doitAutoriserLaSuppressionDunProduitNonReference() throws Exception {
+        mockMvc.perform(delete("/api/produits/" + idEcran))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void doitRefuserLaSuppressionDunProduitReferenceParUneCommande() throws Exception {
+        String corpsCommande = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idEcran);
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corpsCommande))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(delete("/api/produits/" + idEcran))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void doitExporterLeCatalogueEnCsv() throws Exception {
+        mockMvc.perform(get("/api/produits/export"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("reference;libelle;categorie")))
+                .andExpect(content().string(containsString("ECR-030")));
     }
 }
