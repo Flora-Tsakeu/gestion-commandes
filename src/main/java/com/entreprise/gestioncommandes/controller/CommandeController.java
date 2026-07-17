@@ -5,12 +5,17 @@ import com.entreprise.gestioncommandes.dto.NotesRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
+import com.entreprise.gestioncommandes.service.ExportCommandeService;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,9 +26,11 @@ import java.util.List;
 public class CommandeController {
 
     private final CommandeService commandeService;
+    private final ExportCommandeService exportCommandeService;
 
-    public CommandeController(CommandeService commandeService) {
+    public CommandeController(CommandeService commandeService, ExportCommandeService exportCommandeService) {
         this.commandeService = commandeService;
+        this.exportCommandeService = exportCommandeService;
     }
 
     @PostMapping
@@ -42,6 +49,15 @@ public class CommandeController {
     @GetMapping("/statistiques")
     public StatistiquesCommandes statistiques() {
         return commandeService.calculerStatistiques();
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<String> exporter() {
+        String csv = exportCommandeService.exporterCommandesActivesEnCsv();
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"commandes-actives.csv\"")
+                .body(csv);
     }
 
     @GetMapping("/{id}")
