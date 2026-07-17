@@ -72,6 +72,8 @@ public class CommandeService {
         commande.setMontantTotalTtc(CalculateurTva.arrondirDeuxDecimales(totalTtcAvecLivraison));
         commande.setNumeroSuivi("CMD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         commande.setNotes(requete.getNotes());
+        commande.setClientEmail(requete.getClientEmail());
+
         
         Commande enregistree = commandeRepository.save(commande);
         log.info("commande creee, client={}, nbLignes={}, totalTtc={}",
