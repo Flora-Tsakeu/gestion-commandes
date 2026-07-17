@@ -74,7 +74,7 @@ class CommandeIntegrationIT {
                 {
                   "client": "Boutique Sud",
                   "lignes": [
-                    { "produitId": %d, "quantite": 99 }
+                    { "produitId": %d, "quantite": 50 }
                   ]
                 }
                 """.formatted(idProduitDispo);

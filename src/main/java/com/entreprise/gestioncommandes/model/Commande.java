@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -27,6 +28,9 @@ public class Commande {
 
     @NotBlank(message = "le nom du client est obligatoire")
     private String client;
+
+    @Email(message = "l'adresse email du client n'est pas valide")
+    private String clientEmail;
 
     private LocalDateTime dateCreation = LocalDateTime.now();
 
@@ -69,6 +73,14 @@ public class Commande {
 
     public void setClient(String client) {
         this.client = client;
+    }
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
     }
 
     public LocalDateTime getDateCreation() {

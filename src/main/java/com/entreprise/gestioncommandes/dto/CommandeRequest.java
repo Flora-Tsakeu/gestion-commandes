@@ -1,6 +1,7 @@
 package com.entreprise.gestioncommandes.dto;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,9 @@ public class CommandeRequest {
 
     @NotBlank(message = "le nom du client est obligatoire")
     private String client;
+
+    @Email(message = "l'adresse email du client n'est pas valide")
+    private String clientEmail;
 
     @NotEmpty(message = "une commande doit contenir au moins une ligne")
     @Valid
@@ -29,6 +33,14 @@ public class CommandeRequest {
 
     public void setClient(String client) {
         this.client = client;
+    }
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
     }
 
     public List<LigneCommandeRequest> getLignes() {
