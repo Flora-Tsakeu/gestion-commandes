@@ -65,6 +65,11 @@ public class CommandeController {
         return commandeService.recupererParId(id);
     }
 
+    @GetMapping("/numero-suivi/{numero}")
+    public Commande recupererParNumeroSuivi(@PathVariable String numero) {
+        return commandeService.recupererParNumeroSuivi(numero);
+    }
+
     @GetMapping
     public List<Commande> lister(@RequestParam(required = false) String client,
                                   @RequestParam(required = false) Boolean annulee) {

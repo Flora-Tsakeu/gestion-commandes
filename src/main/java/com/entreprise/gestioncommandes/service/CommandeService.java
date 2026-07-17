@@ -88,6 +88,11 @@ public class CommandeService {
         return commandeRepository.findById(id)
                 .orElseThrow(() -> new CommandeIntrouvableException(id));
     }
+
+    public Commande recupererParNumeroSuivi(String numeroSuivi) {
+        return commandeRepository.findByNumeroSuivi(numeroSuivi)
+                .orElseThrow(() -> new CommandeIntrouvableException(numeroSuivi));
+    }
     
     public List<Commande> listerToutes() {
         return commandeRepository.findAllByOrderByDateCreationDesc();
