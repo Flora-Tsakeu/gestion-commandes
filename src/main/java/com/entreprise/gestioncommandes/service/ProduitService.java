@@ -78,7 +78,7 @@ public class ProduitService {
             throw new ProduitReferenceParCommandeException(id);
         }
         produitRepository.delete(existant);
-        log.info("produit supprime, id={}", id);
+        log.info("produit supprime , id={}", id);
     }
 
     public List<Produit> listerStockFaible(int seuil) {
