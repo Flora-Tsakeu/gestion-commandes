@@ -38,6 +38,11 @@ public class GestionnaireExceptionsGlobal {
         return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(ProduitReferenceParCommandeException.class)
+    public ResponseEntity<Map<String, Object>> gererProduitReferenceParCommande(ProduitReferenceParCommandeException ex) {
+        return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> gererValidation(MethodArgumentNotValidException ex) {
         String details = ex.getBindingResult().getFieldErrors().stream()

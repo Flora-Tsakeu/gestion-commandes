@@ -2,8 +2,10 @@ package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
+import com.entreprise.gestioncommandes.exception.ProduitReferenceParCommandeException;
 import com.entreprise.gestioncommandes.exception.ReferenceProduitDejaUtiliseeException;
 import com.entreprise.gestioncommandes.model.Produit;
+import com.entreprise.gestioncommandes.repository.LigneCommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +21,12 @@ public class ProduitService {
     private static final Logger log = LoggerFactory.getLogger(ProduitService.class);
 
     private final ProduitRepository produitRepository;
+    private final LigneCommandeRepository ligneCommandeRepository;
 
-    public ProduitService(ProduitRepository produitRepository) {
+
+    public ProduitService(ProduitRepository produitRepository, LigneCommandeRepository ligneCommandeRepository) {
         this.produitRepository = produitRepository;
+        this.ligneCommandeRepository = ligneCommandeRepository;
     }
 
     public Page<Produit> listerProduits(Pageable pageable) {
@@ -69,6 +74,9 @@ public class ProduitService {
 
     public void supprimer(Long id) {
         Produit existant = recupererParId(id);
+        if (ligneCommandeRepository.existsByProduitId(id)) {
+            throw new ProduitReferenceParCommandeException(id);
+        }
         produitRepository.delete(existant);
         log.info("produit supprime, id={}", id);
     }
