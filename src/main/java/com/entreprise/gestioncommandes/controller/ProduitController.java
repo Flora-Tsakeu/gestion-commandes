@@ -2,6 +2,7 @@ package com.entreprise.gestioncommandes.controller;
 
 import com.entreprise.gestioncommandes.dto.ReapprovisionnementRequest;
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
+import com.entreprise.gestioncommandes.dto.TopProduitVendu;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.service.ExportProduitService;
 import com.entreprise.gestioncommandes.service.ProduitService;
@@ -64,6 +65,11 @@ public class ProduitController {
                                                     @RequestParam BigDecimal prixMin,
                                                     @RequestParam BigDecimal prixMax) {
         return produitService.rechercherParPlageDePrix(prixMin, prixMax, pageable);
+    }
+
+    @GetMapping("/top-ventes")
+    public List<TopProduitVendu> topProduitsVendus(Pageable pageable) {
+        return produitService.trouverTopProduitsVendus(pageable);
     }
 
     @GetMapping("/export")

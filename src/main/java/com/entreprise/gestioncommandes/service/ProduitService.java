@@ -1,6 +1,7 @@
 package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
+import com.entreprise.gestioncommandes.dto.TopProduitVendu;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitReferenceParCommandeException;
 import com.entreprise.gestioncommandes.exception.ReferenceProduitDejaUtiliseeException;
@@ -100,6 +101,10 @@ public class ProduitService {
 
     public List<ResumeStockCategorie> resumerStockParCategorie() {
         return produitRepository.resumerStockParCategorie();
+    }
+
+    public List<TopProduitVendu> trouverTopProduitsVendus(Pageable pageable) {
+        return ligneCommandeRepository.trouverTopProduitsVendus(pageable);
     }
 
     public Produit reapprovisionner(Long id, int quantiteAjoutee) {
