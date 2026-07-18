@@ -5,6 +5,7 @@ import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
+import com.entreprise.gestioncommandes.exception.MontantMinimumNonAtteintException;
 import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
@@ -241,5 +242,23 @@ class CommandeServiceTest {
         assertThatThrownBy(() -> commandeService.creerCommande(requete))
                 .isInstanceOf(ReferenceExterneDejaUtiliseeException.class)
                 .hasMessageContaining("ERP-2026-004512");
+    }
+
+    @Test
+    void doitRefuserUneCommandeSousLeMontantMinimum() {
+        Produit gomme = new Produit("FOUR-003", "Gomme", new BigDecimal("1.50"), 100);
+        gomme.setId(3L);
+        when(produitRepository.findById(3L)).thenReturn(Optional.of(gomme));
+
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        LigneCommandeRequest ligne = new LigneCommandeRequest();
+        ligne.setProduitId(3L);
+        ligne.setQuantite(1);
+        requete.setLignes(List.of(ligne));
+
+        assertThatThrownBy(() -> commandeService.creerCommande(requete))
+                .isInstanceOf(MontantMinimumNonAtteintException.class)
+                .hasMessageContaining("1.50");
     }
 }
