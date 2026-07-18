@@ -28,4 +28,6 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
 
     Page<Produit> findByLibelleContainingIgnoreCase(String texte, Pageable pageable);
 
+     Page<Produit> findByActif(boolean actif, Pageable pageable);
+
 }

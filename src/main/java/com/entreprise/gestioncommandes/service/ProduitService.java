@@ -30,6 +30,10 @@ public class ProduitService {
     }
 
     public Page<Produit> listerProduits(Pageable pageable) {
+        return produitRepository.findByActif(true, pageable);
+    }
+
+    public Page<Produit> listerTousMemeInactifs(Pageable pageable) {
         return produitRepository.findAll(pageable);
     }
 

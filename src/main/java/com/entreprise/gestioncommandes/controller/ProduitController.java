@@ -31,12 +31,16 @@ public class ProduitController {
     @GetMapping
     public Page<Produit> lister(Pageable pageable,
                                  @RequestParam(required = false) String categorie,
-                                 @RequestParam(required = false) String recherche) {
+                                 @RequestParam(required = false) String recherche,
+                                 @RequestParam(defaultValue = "false") boolean inclureInactifs) {
         if (recherche != null && !recherche.isBlank()) {
             return produitService.rechercherParLibelle(recherche, pageable);
         }
         if (categorie != null && !categorie.isBlank()) {
             return produitService.listerParCategorie(categorie, pageable);
+        }
+        if (inclureInactifs) {
+            return produitService.listerTousMemeInactifs(pageable);
         }
         return produitService.listerProduits(pageable);
     }
