@@ -43,6 +43,11 @@ public class GestionnaireExceptionsGlobal {
         return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(ProduitInactifException.class)
+    public ResponseEntity<Map<String, Object>> gererProduitInactif(ProduitInactifException ex) {
+        return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> gererValidation(MethodArgumentNotValidException ex) {
         String details = ex.getBindingResult().getFieldErrors().stream()
