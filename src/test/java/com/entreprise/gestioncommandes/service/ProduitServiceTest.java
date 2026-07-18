@@ -221,5 +221,17 @@ class ProduitServiceTest {
         assertThat(resultat.getContent()).hasSize(1);
     }
 
+    @Test
+    void doitRechercherLesProduitsDansUnePlageDePrix() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(produitRepository.findByPrixUnitaireHtBetween(eq(new BigDecimal("40.00")), eq(new BigDecimal("80.00")), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(clavier)));
+
+        var resultat = produitService.rechercherParPlageDePrix(new BigDecimal("40.00"), new BigDecimal("80.00"), pageable);
+
+        assertThat(resultat.getContent()).hasSize(1);
+        assertThat(resultat.getContent().get(0).getReference()).isEqualTo("CLAV-001");
+    }
+
    
 }
