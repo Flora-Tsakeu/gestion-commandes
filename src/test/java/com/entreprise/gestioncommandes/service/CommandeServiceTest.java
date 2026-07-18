@@ -261,4 +261,24 @@ class CommandeServiceTest {
                 .isInstanceOf(MontantMinimumNonAtteintException.class)
                 .hasMessageContaining("1.50");
     }
+
+    @Test
+    void doitAccepterUneCommandeExactementAuMontantMinimum() {
+        Produit fourniture = new Produit("FOUR-004", "Bloc-notes", new BigDecimal("5.00"), 50);
+        fourniture.setId(4L);
+        when(produitRepository.findById(4L)).thenReturn(Optional.of(fourniture));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commandeRepository.save(any(Commande.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        LigneCommandeRequest ligne = new LigneCommandeRequest();
+        ligne.setProduitId(4L);
+        ligne.setQuantite(1);
+        requete.setLignes(List.of(ligne));
+
+        Commande resultat = commandeService.creerCommande(requete);
+
+        assertThat(resultat.getMontantTotalHt()).isEqualByComparingTo("5.00");
+    }
 }
