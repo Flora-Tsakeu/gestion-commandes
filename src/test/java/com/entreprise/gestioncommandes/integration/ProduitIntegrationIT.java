@@ -108,4 +108,34 @@ class ProduitIntegrationIT {
                 .andExpect(content().string(containsString("reference;libelle;categorie")))
                 .andExpect(content().string(containsString("ECR-030")));
     }
+
+    @Test
+    void doitRetrouverLEcranDansLaPlageDePrixCorrespondante() throws Exception {
+        mockMvc.perform(get("/api/produits/plage-prix")
+                        .param("prixMin", "200.00")
+                        .param("prixMax", "300.00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].reference").value("ECR-030"));
+    }
+
+    @Test
+    void doitRemonterLEcranDansLeTopVentesApresUneCommande() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 2 }
+                  ]
+                }
+                """.formatted(idEcran);
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/produits/top-ventes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].reference").value("ECR-030"))
+                .andExpect(jsonPath("$[0].quantiteTotaleVendue").value(2));
+    }
 }

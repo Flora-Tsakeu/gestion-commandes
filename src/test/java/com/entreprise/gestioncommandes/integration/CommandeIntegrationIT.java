@@ -327,5 +327,53 @@ class CommandeIntegrationIT {
                 .andExpect(status().isConflict());
     }
 
+    @Test
+    void doitRefuserUneCommandeSousLeMontantMinimum() throws Exception {
+        Produit article = new Produit("FOUR-010", "Trombones (boite)", new BigDecimal("1.20"), 200);
+        Long idArticle = produitRepository.save(article).getId();
+
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idArticle);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void doitDupliquerUneCommandeExistanteEtDecrementerLeStockUneSecondeFois() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 3 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        String reponseOriginale = mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Long idOriginale = objectMapper.readTree(reponseOriginale).get("id").asLong();
+
+        mockMvc.perform(post("/api/commandes/" + idOriginale + "/duplication"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.client").value("Boutique Nord"))
+                .andExpect(jsonPath("$.notes").exists());
+
+        mockMvc.perform(get("/api/produits/" + idProduitDispo))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantiteStock").value(9));
+    }
+
 
 }
