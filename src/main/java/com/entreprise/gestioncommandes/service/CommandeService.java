@@ -86,6 +86,7 @@ public class CommandeService {
         commande.setNumeroSuivi(GenerateurNumeroSuivi.genererNouveauNumero());
         commande.setNotes(requete.getNotes());
         commande.setClientEmail(requete.getClientEmail());
+        commande.setReferenceExterne(requete.getReferenceExterne());
 
         
         Commande enregistree = commandeRepository.save(commande);
