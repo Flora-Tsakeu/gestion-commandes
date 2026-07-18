@@ -48,6 +48,11 @@ public class GestionnaireExceptionsGlobal {
         return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(ReferenceExterneDejaUtiliseeException.class)
+    public ResponseEntity<Map<String, Object>> gererReferenceExterneDejaUtilisee(ReferenceExterneDejaUtiliseeException ex) {
+        return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> gererValidation(MethodArgumentNotValidException ex) {
         String details = ex.getBindingResult().getFieldErrors().stream()

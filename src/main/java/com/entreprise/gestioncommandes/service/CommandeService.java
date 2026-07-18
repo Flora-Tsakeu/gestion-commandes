@@ -7,6 +7,7 @@ import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
+import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
@@ -46,6 +47,11 @@ public class CommandeService {
 
     @Transactional
     public Commande creerCommande(CommandeRequest requete) {
+        if (requete.getReferenceExterne() != null && !requete.getReferenceExterne().isBlank()
+                && commandeRepository.existsByReferenceExterne(requete.getReferenceExterne())) {
+            throw new ReferenceExterneDejaUtiliseeException(requete.getReferenceExterne());
+        }
+        
         Commande commande = new Commande(requete.getClient());
         BigDecimal totalHt = BigDecimal.ZERO;
 

@@ -27,6 +27,9 @@ public class CommandeRequest {
 
     private ModeLivraison modeLivraison;
 
+    @Size(max = 60, message = "la reference externe ne peut pas depasser 60 caracteres")
+    private String referenceExterne;
+
     public String getClient() {
         return client;
     }
@@ -65,5 +68,13 @@ public class CommandeRequest {
 
     public void setModeLivraison(ModeLivraison modeLivraison) {
         this.modeLivraison = modeLivraison;
+    }
+
+    public String getReferenceExterne() {
+        return referenceExterne;
+    }
+
+    public void setReferenceExterne(String referenceExterne) {
+        this.referenceExterne = referenceExterne;
     }
 }

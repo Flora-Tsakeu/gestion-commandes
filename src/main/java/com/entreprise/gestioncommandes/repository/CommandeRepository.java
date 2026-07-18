@@ -28,6 +28,8 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
 
     Optional<Commande> findByNumeroSuivi(String numeroSuivi);
 
+    boolean existsByReferenceExterne(String referenceExterne);
+
     long countByAnnulee(boolean annulee);
 
     @Query("select coalesce(sum(c.montantTotalTtc), 0) from Commande c where c.annulee = false")

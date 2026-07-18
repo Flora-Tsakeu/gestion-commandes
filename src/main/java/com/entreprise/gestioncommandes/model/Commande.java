@@ -48,6 +48,9 @@ public class Commande {
     @Enumerated(EnumType.STRING)
     private ModeLivraison modeLivraison = ModeLivraison.STANDARD;
 
+    @Size(max = 60, message = "la reference externe ne peut pas depasser 60 caracteres")
+    private String referenceExterne;
+
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<LigneCommande> lignes = new ArrayList<>();
@@ -145,5 +148,13 @@ public class Commande {
 
     public void setModeLivraison(ModeLivraison modeLivraison) {
         this.modeLivraison = modeLivraison;
+    }
+
+    public String getReferenceExterne() {
+        return referenceExterne;
+    }
+
+    public void setReferenceExterne(String referenceExterne) {
+        this.referenceExterne = referenceExterne;
     }
 }
