@@ -105,5 +105,13 @@ public class ProduitService {
         return maj;
     }
 
+    public Produit changerStatutActif(Long id, boolean actif) {
+        Produit produit = recupererParId(id);
+        produit.setActif(actif);
+        Produit maj = produitRepository.save(produit);
+        log.info("statut actif change, reference={}, actif={}", maj.getReference(), actif);
+        return maj;
+    }
+
     
 }

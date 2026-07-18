@@ -42,6 +42,8 @@ public class Produit {
     @Min(value = 0, message = "le seuil d'alerte ne peut pas etre negatif")
     private Integer seuilAlerte = 5;
 
+    private boolean actif = true;
+
     public Produit() {
     }
 
@@ -111,5 +113,13 @@ public class Produit {
 
     public void setSeuilAlerte(Integer seuilAlerte) {
         this.seuilAlerte = seuilAlerte;
+    }
+
+    public boolean isActif() {
+        return actif;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
     }
 }

@@ -89,6 +89,16 @@ public class ProduitController {
         return produitService.reapprovisionner(id, requete.getQuantite());
     }
 
+    @PatchMapping("/{id}/desactivation")
+    public Produit desactiver(@PathVariable Long id) {
+        return produitService.changerStatutActif(id, false);
+    }
+
+    @PatchMapping("/{id}/reactivation")
+    public Produit reactiver(@PathVariable Long id) {
+        return produitService.changerStatutActif(id, true);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void supprimer(@PathVariable Long id) {
