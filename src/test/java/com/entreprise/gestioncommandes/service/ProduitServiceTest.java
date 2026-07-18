@@ -200,5 +200,26 @@ class ProduitServiceTest {
                 .hasMessageContaining("1");
     }
 
+    @Test
+    void doitDesactiverUnProduit() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Produit resultat = produitService.changerStatutActif(1L, false);
+
+        assertThat(resultat.isActif()).isFalse();
+    }
+
+    @Test
+    void doitLimiterLeListingParDefautAuxProduitsActifs() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(produitRepository.findByActif(eq(true), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(clavier)));
+
+        var resultat = produitService.listerProduits(pageable);
+
+        assertThat(resultat.getContent()).hasSize(1);
+    }
+
    
 }
