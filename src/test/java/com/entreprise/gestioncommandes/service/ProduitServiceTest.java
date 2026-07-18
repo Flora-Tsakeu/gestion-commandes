@@ -1,6 +1,7 @@
 package com.entreprise.gestioncommandes.service;
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
+import com.entreprise.gestioncommandes.dto.TopProduitVendu;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitReferenceParCommandeException;
 import com.entreprise.gestioncommandes.exception.ReferenceProduitDejaUtiliseeException;
@@ -231,6 +232,18 @@ class ProduitServiceTest {
 
         assertThat(resultat.getContent()).hasSize(1);
         assertThat(resultat.getContent().get(0).getReference()).isEqualTo("CLAV-001");
+    }
+
+    @Test
+    void doitRemonterLeClassementDesProduitsLesPlusVendus() {
+        Pageable pageable = PageRequest.of(0, 5);
+        TopProduitVendu top = new TopProduitVendu("CLAV-001", "Clavier mecanique", 42L);
+        when(ligneCommandeRepository.trouverTopProduitsVendus(pageable)).thenReturn(List.of(top));
+
+        List<TopProduitVendu> resultat = produitService.trouverTopProduitsVendus(pageable);
+
+        assertThat(resultat).hasSize(1);
+        assertThat(resultat.get(0).getQuantiteTotaleVendue()).isEqualTo(42L);
     }
 
    
