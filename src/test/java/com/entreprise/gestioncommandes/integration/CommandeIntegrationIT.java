@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -257,6 +258,73 @@ class CommandeIntegrationIT {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("numeroSuivi;client;dateCreation")))
                 .andExpect(content().string(containsString("Boutique Nord")));
+    }
+
+    @Test
+    void doitRefuserLaCommandeSiLeProduitEstDesactive() throws Exception {
+        mockMvc.perform(patch("/api/produits/" + idProduitDispo + "/desactivation"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.actif").value(false));
+
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void doitConfirmerLIntegriteDuneCommandeFraichementCreee() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 2 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        String reponse = mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Long idCommande = objectMapper.readTree(reponse).get("id").asLong();
+
+        mockMvc.perform(get("/api/commandes/" + idCommande + "/integrite"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.integre").value(true));
+    }
+
+    @Test
+    void doitRefuserDeuxCommandesAvecLaMemeReferenceExterne() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "referenceExterne": "ERP-2026-004512",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isConflict());
     }
 
 
