@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -56,6 +57,13 @@ public class ProduitController {
     @GetMapping("/resume-stock")
     public List<ResumeStockCategorie> resumerStockParCategorie() {
         return produitService.resumerStockParCategorie();
+    }
+
+    @GetMapping("/plage-prix")
+    public Page<Produit> rechercherParPlageDePrix(Pageable pageable,
+                                                    @RequestParam BigDecimal prixMin,
+                                                    @RequestParam BigDecimal prixMax) {
+        return produitService.rechercherParPlageDePrix(prixMin, prixMax, pageable);
     }
 
     @GetMapping("/export")

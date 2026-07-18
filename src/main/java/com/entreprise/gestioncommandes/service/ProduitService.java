@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -43,6 +44,10 @@ public class ProduitService {
 
     public Page<Produit> rechercherParLibelle(String texte, Pageable pageable) {
         return produitRepository.findByLibelleContainingIgnoreCase(texte, pageable);
+    }
+
+    public Page<Produit> rechercherParPlageDePrix(BigDecimal prixMin, BigDecimal prixMax, Pageable pageable) {
+        return produitRepository.findByPrixUnitaireHtBetween(prixMin, prixMax, pageable);
     }
 
     public Produit recupererParId(Long id) {
