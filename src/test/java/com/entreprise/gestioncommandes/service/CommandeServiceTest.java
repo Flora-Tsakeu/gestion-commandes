@@ -6,6 +6,7 @@ import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ProduitInactifException;
+import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
@@ -202,5 +203,22 @@ class CommandeServiceTest {
         assertThatThrownBy(() -> commandeService.recupererParNumeroSuivi("CMD-INEXISTANT"))
                 .isInstanceOf(CommandeIntrouvableException.class)
                 .hasMessageContaining("CMD-INEXISTANT");
+    }
+
+    @Test
+    void doitRefuserUneReferenceExterneDejaUtilisee() {
+        when(commandeRepository.existsByReferenceExterne("ERP-2026-004512")).thenReturn(true);
+
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        requete.setReferenceExterne("ERP-2026-004512");
+        LigneCommandeRequest ligne = new LigneCommandeRequest();
+        ligne.setProduitId(2L);
+        ligne.setQuantite(1);
+        requete.setLignes(List.of(ligne));
+
+        assertThatThrownBy(() -> commandeService.creerCommande(requete))
+                .isInstanceOf(ReferenceExterneDejaUtiliseeException.class)
+                .hasMessageContaining("ERP-2026-004512");
     }
 }
