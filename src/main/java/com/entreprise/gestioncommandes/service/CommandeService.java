@@ -110,6 +110,31 @@ public class CommandeService {
         return commandeRepository.findByNumeroSuivi(numeroSuivi)
                 .orElseThrow(() -> new CommandeIntrouvableException(numeroSuivi));
     }
+
+    @Transactional
+    public Commande dupliquerCommande(Long id) {
+        Commande originale = recupererParId(id);
+
+        CommandeRequest nouvelleRequete = new CommandeRequest();
+        nouvelleRequete.setClient(originale.getClient());
+        nouvelleRequete.setClientEmail(originale.getClientEmail());
+        nouvelleRequete.setModeLivraison(originale.getModeLivraison());
+        nouvelleRequete.setNotes("duplication de la commande " + originale.getNumeroSuivi());
+
+        List<LigneCommandeRequest> lignes = originale.getLignes().stream()
+                .map(ligne -> {
+                    LigneCommandeRequest ligneRequete = new LigneCommandeRequest();
+                    ligneRequete.setProduitId(ligne.getProduit().getId());
+                    ligneRequete.setQuantite(ligne.getQuantite());
+                    return ligneRequete;
+                })
+                .toList();
+        nouvelleRequete.setLignes(lignes);
+
+        Commande nouvelle = creerCommande(nouvelleRequete);
+        log.info("commande dupliquee, source={}, nouvelle={}", originale.getNumeroSuivi(), nouvelle.getNumeroSuivi());
+        return nouvelle;
+    }
     
     public List<Commande> listerToutes() {
         return commandeRepository.findAllByOrderByDateCreationDesc();

@@ -103,6 +103,12 @@ public class CommandeController {
         return commandeService.annuler(id);
     }
 
+    @PostMapping("/{id}/duplication")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Commande dupliquer(@PathVariable Long id) {
+        return commandeService.dupliquerCommande(id);
+    }
+
     @PatchMapping("/{id}/notes")
     public Commande modifierNotes(@PathVariable Long id, @Valid @RequestBody NotesRequest requete) {
         return commandeService.modifierNotes(id, requete.getNotes());
