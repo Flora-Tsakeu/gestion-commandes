@@ -10,6 +10,7 @@ import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeExc
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
+import com.entreprise.gestioncommandes.model.ModeLivraison;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
@@ -109,7 +110,27 @@ class CommandeServiceTest {
         assertThatThrownBy(() -> commandeService.creerCommande(requete))
                 .isInstanceOf(ProduitInactifException.class)
                 .hasMessageContaining("ECR-027");
+    }@Test
+    void doitAjouterLesFraisDeLivraisonExpressAuTotalTtc() {
+        when(produitRepository.findById(2L)).thenReturn(Optional.of(ecran));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commandeRepository.save(any(Commande.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        requete.setModeLivraison(ModeLivraison.EXPRESS);
+        LigneCommandeRequest ligne = new LigneCommandeRequest();
+        ligne.setProduitId(2L);
+        ligne.setQuantite(1);
+        requete.setLignes(List.of(ligne));
+
+        Commande resultat = commandeService.creerCommande(requete);
+
+        assertThat(resultat.getModeLivraison()).isEqualTo(ModeLivraison.EXPRESS);
+        assertThat(resultat.getMontantTotalTtc()).isEqualByComparingTo("248.70");
     }
+
+
 
     @Test
     void doitAutoriserLAnnulationDansLeDelai() {
