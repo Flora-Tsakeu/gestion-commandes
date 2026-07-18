@@ -5,6 +5,7 @@ import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
+import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
@@ -89,6 +90,23 @@ class CommandeServiceTest {
 
         assertThatThrownBy(() -> commandeService.creerCommande(requete))
                 .isInstanceOf(StockInsuffisantException.class)
+                .hasMessageContaining("ECR-027");
+    }
+
+    @Test
+    void doitRefuserLaCommandeSiProduitDesactive() {
+        ecran.setActif(false);
+        when(produitRepository.findById(2L)).thenReturn(Optional.of(ecran));
+
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        LigneCommandeRequest ligne = new LigneCommandeRequest();
+        ligne.setProduitId(2L);
+        ligne.setQuantite(1);
+        requete.setLignes(List.of(ligne));
+
+        assertThatThrownBy(() -> commandeService.creerCommande(requete))
+                .isInstanceOf(ProduitInactifException.class)
                 .hasMessageContaining("ECR-027");
     }
 
