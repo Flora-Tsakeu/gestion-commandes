@@ -1,11 +1,13 @@
 package com.entreprise.gestioncommandes.controller;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
+import com.entreprise.gestioncommandes.dto.IntegriteCommande;
 import com.entreprise.gestioncommandes.dto.NotesRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
 import com.entreprise.gestioncommandes.service.ExportCommandeService;
+import com.entreprise.gestioncommandes.service.IntegriteCommandeService;
 
 import jakarta.validation.Valid;
 
@@ -63,6 +65,12 @@ public class CommandeController {
     @GetMapping("/{id}")
     public Commande recuperer(@PathVariable Long id) {
         return commandeService.recupererParId(id);
+    }
+
+    @GetMapping("/{id}/integrite")
+    public IntegriteCommande verifierIntegrite(@PathVariable Long id) {
+        Commande commande = commandeService.recupererParId(id);
+        return IntegriteCommandeService.verifier(commande);
     }
 
     @GetMapping("/numero-suivi/{numero}")
