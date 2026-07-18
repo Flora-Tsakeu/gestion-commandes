@@ -281,4 +281,23 @@ class CommandeServiceTest {
 
         assertThat(resultat.getMontantTotalHt()).isEqualByComparingTo("5.00");
     }
+
+    @Test
+    void doitDupliquerUneCommandeExistante() {
+        LigneCommande ligneOriginale = new LigneCommande(ecran, 1);
+        ligneOriginale.setPrixUnitaireHtApplique(ecran.getPrixUnitaireHt());
+        Commande originale = new Commande("Societe Dubois");
+        originale.setNumeroSuivi("CMD-11112222");
+        originale.setLignes(List.of(ligneOriginale));
+        when(commandeRepository.findById(9L)).thenReturn(Optional.of(originale));
+        when(produitRepository.findById(2L)).thenReturn(Optional.of(ecran));
+        when(produitRepository.save(any(Produit.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commandeRepository.save(any(Commande.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Commande resultat = commandeService.dupliquerCommande(9L);
+
+        assertThat(resultat.getClient()).isEqualTo("Societe Dubois");
+        assertThat(resultat.getNotes()).contains("CMD-11112222");
+        assertThat(resultat.getLignes()).hasSize(1);
+    }
 }
