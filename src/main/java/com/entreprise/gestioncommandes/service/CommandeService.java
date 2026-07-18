@@ -5,6 +5,7 @@ import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
+import com.entreprise.gestioncommandes.exception.MontantMinimumNonAtteintException;
 import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeException;
@@ -33,6 +34,7 @@ public class CommandeService {
 
     private static final Logger log = LoggerFactory.getLogger(CommandeService.class);
     private static final int DELAI_MAX_ANNULATION_JOURS = 30;
+    private static final BigDecimal MONTANT_MINIMUM_HT = new BigDecimal("5.00");
     
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
@@ -79,6 +81,9 @@ public class CommandeService {
         }
 
         commande.setMontantTotalHt(CalculateurTva.arrondirDeuxDecimales(totalHt));
+        if (totalHt.compareTo(MONTANT_MINIMUM_HT) < 0) {
+            throw new MontantMinimumNonAtteintException(CalculateurTva.arrondirDeuxDecimales(totalHt), MONTANT_MINIMUM_HT);
+        }
         ModeLivraison modeLivraison = requete.getModeLivraison() != null ? requete.getModeLivraison() : ModeLivraison.STANDARD;
         commande.setModeLivraison(modeLivraison);
         BigDecimal totalTtcAvecLivraison = CalculateurTva.calculerMontantTtc(totalHt).add(modeLivraison.getFraisHt());
