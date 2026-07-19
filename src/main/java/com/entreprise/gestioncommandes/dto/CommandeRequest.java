@@ -19,6 +19,7 @@ public class CommandeRequest {
     private String clientEmail;
 
     @NotEmpty(message = "une commande doit contenir au moins une ligne")
+    @Size(max = 20, message = "une commande ne peut pas depasser 20 lignes distinctes")
     @Valid
     private List<LigneCommandeRequest> lignes;
 
