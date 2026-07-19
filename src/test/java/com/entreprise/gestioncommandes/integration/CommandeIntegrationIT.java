@@ -478,6 +478,28 @@ class CommandeIntegrationIT {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void doitInclureLeCompteurDeCommandesPrioritairesDansLesStatistiques() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "prioritaire": true,
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/commandes/statistiques"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombrePrioritairesNonTraitees").value(1));
+    }
+
 
      
 
