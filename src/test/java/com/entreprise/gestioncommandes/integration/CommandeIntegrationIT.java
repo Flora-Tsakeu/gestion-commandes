@@ -375,5 +375,25 @@ class CommandeIntegrationIT {
                 .andExpect(jsonPath("$.quantiteStock").value(9));
     }
 
+    @Test
+    void doitRefuserUneCommandeDePlusDeVingtLignes() throws Exception {
+        StringBuilder lignes = new StringBuilder();
+        for (int i = 0; i < 21; i++) {
+            if (i > 0) {
+                lignes.append(",");
+            }
+            lignes.append("{ \"produitId\": ").append(idProduitDispo).append(", \"quantite\": 1 }");
+        }
+        String corps = "{ \"client\": \"Boutique Nord\", \"lignes\": [" + lignes + "] }";
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isBadRequest());
+    }
+
+
+     
+
 
 }
