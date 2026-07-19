@@ -58,6 +58,11 @@ public class GestionnaireExceptionsGlobal {
         return construireReponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(LigneDupliqueeException.class)
+    public ResponseEntity<Map<String, Object>> gererLigneDupliquee(LigneDupliqueeException ex) {
+        return construireReponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> gererValidation(MethodArgumentNotValidException ex) {
         String details = ex.getBindingResult().getFieldErrors().stream()
