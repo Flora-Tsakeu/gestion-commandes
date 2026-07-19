@@ -138,4 +138,21 @@ class ProduitIntegrationIT {
                 .andExpect(jsonPath("$[0].reference").value("ECR-030"))
                 .andExpect(jsonPath("$[0].quantiteTotaleVendue").value(2));
     }
+
+    @Test
+    void doitConfirmerLaDisponibilitePourUneQuantiteRaisonnable() throws Exception {
+        mockMvc.perform(get("/api/produits/" + idEcran + "/disponibilite")
+                        .param("quantite", "3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.disponible").value(true))
+                .andExpect(jsonPath("$.quantiteStock").value(6));
+    }
+
+    @Test
+    void doitSignalerLIndisponibilitePourUneQuantiteExcessive() throws Exception {
+        mockMvc.perform(get("/api/produits/" + idEcran + "/disponibilite")
+                        .param("quantite", "999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.disponible").value(false));
+    }
 }
