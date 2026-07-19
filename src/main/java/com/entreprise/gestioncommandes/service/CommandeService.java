@@ -22,10 +22,8 @@ import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
 import com.entreprise.gestioncommandes.exception.LigneDupliqueeException;
 import com.entreprise.gestioncommandes.exception.MontantMinimumNonAtteintException;
-import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
 import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeException;
-import com.entreprise.gestioncommandes.exception.StockInsuffisantException;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.model.LigneCommande;
 import com.entreprise.gestioncommandes.model.ModeLivraison;
@@ -68,13 +66,7 @@ public class CommandeService {
             Produit produit = produitRepository.findById(ligneRequete.getProduitId())
                     .orElseThrow(() -> new ProduitIntrouvableException(ligneRequete.getProduitId()));
             
-            if (!produit.isActif()) {
-                throw new ProduitInactifException(produit.getReference());
-            }
-
-            if (produit.getQuantiteStock() < ligneRequete.getQuantite()) {
-                throw new StockInsuffisantException(produit.getReference(), ligneRequete.getQuantite(), produit.getQuantiteStock());
-            }
+            ValidateurCommande.verifierProduitCommandable(produit, ligneRequete.getQuantite());
 
             produit.setQuantiteStock(produit.getQuantiteStock() - ligneRequete.getQuantite());
             produitRepository.save(produit);
