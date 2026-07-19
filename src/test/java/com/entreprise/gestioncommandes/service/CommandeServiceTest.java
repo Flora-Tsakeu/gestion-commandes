@@ -196,6 +196,23 @@ class CommandeServiceTest {
     }
 
     @Test
+    void doitInclureLeNombreDeCommandesPrioritairesNonTraiteesDansLesStatistiques() {
+        Commande prioritaireUn = new Commande("Boutique Nord");
+        prioritaireUn.setPrioritaire(true);
+        Commande prioritaireDeux = new Commande("Boutique Sud");
+        prioritaireDeux.setPrioritaire(true);
+        when(commandeRepository.findByPrioritaireTrueAndAnnuleeFalseOrderByDateCreationAsc())
+                .thenReturn(List.of(prioritaireUn, prioritaireDeux));
+        when(commandeRepository.countByAnnulee(false)).thenReturn(10L);
+        when(commandeRepository.countByAnnulee(true)).thenReturn(1L);
+        when(commandeRepository.calculerChiffreAffairesActif()).thenReturn(new BigDecimal("500.00"));
+
+        StatistiquesCommandes resultat = commandeService.calculerStatistiques();
+
+        assertThat(resultat.getNombrePrioritairesNonTraitees()).isEqualTo(2L);
+    }
+
+    @Test
     void doitListerLesCommandesDunClientDeFaconPaginee() {
         Commande commande = new Commande("Boutique Nord");
         Pageable pageable = PageRequest.of(0, 5);
