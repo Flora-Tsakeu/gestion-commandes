@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.service;
 
+import com.entreprise.gestioncommandes.dto.DisponibiliteProduit;
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.dto.TopProduitVendu;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
@@ -244,6 +245,35 @@ class ProduitServiceTest {
 
         assertThat(resultat).hasSize(1);
         assertThat(resultat.get(0).getQuantiteTotaleVendue()).isEqualTo(42L);
+    }
+
+    @Test
+    void doitDeclarerDisponibleSiStockSuffisantEtProduitActif() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+
+        DisponibiliteProduit resultat = produitService.verifierDisponibilite(1L, 10);
+
+        assertThat(resultat.isDisponible()).isTrue();
+        assertThat(resultat.getQuantiteStock()).isEqualTo(25);
+    }
+
+    @Test
+    void doitDeclarerIndisponibleSiStockInsuffisant() {
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+
+        DisponibiliteProduit resultat = produitService.verifierDisponibilite(1L, 100);
+
+        assertThat(resultat.isDisponible()).isFalse();
+    }
+
+    @Test
+    void doitDeclarerIndisponibleSiProduitDesactive() {
+        clavier.setActif(false);
+        when(produitRepository.findById(1L)).thenReturn(Optional.of(clavier));
+
+        DisponibiliteProduit resultat = produitService.verifierDisponibilite(1L, 1);
+
+        assertThat(resultat.isDisponible()).isFalse();
     }
 
    
