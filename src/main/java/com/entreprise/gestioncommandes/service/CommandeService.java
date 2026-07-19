@@ -184,8 +184,9 @@ public class CommandeService {
     public StatistiquesCommandes calculerStatistiques() {
         long actives = commandeRepository.countByAnnulee(false);
         long annulees = commandeRepository.countByAnnulee(true);
+        long prioritairesNonTraitees = commandeRepository.findByPrioritaireTrueAndAnnuleeFalseOrderByDateCreationAsc().size();
         BigDecimal chiffreAffaires = commandeRepository.calculerChiffreAffairesActif();
-        return new StatistiquesCommandes(actives, annulees, chiffreAffaires);
+        return new StatistiquesCommandes(actives, annulees, prioritairesNonTraitees, chiffreAffaires);
     }
 
     public Commande modifierNotes(Long id, String notes) {
