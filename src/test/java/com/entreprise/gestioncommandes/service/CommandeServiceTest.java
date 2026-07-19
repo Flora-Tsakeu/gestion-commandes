@@ -5,6 +5,7 @@ import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
+import com.entreprise.gestioncommandes.exception.LigneDupliqueeException;
 import com.entreprise.gestioncommandes.exception.MontantMinimumNonAtteintException;
 import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.ReferenceExterneDejaUtiliseeException;
@@ -331,5 +332,22 @@ class CommandeServiceTest {
 
         assertThat(resultat).hasSize(1);
         assertThat(resultat.get(0).isPrioritaire()).isTrue();
+    }
+
+    @Test
+    void doitRefuserDeuxLignesPointantVersLeMemeProduit() {
+        CommandeRequest requete = new CommandeRequest();
+        requete.setClient("Societe Dubois");
+        LigneCommandeRequest premiereLigne = new LigneCommandeRequest();
+        premiereLigne.setProduitId(2L);
+        premiereLigne.setQuantite(1);
+        LigneCommandeRequest deuxiemeLigne = new LigneCommandeRequest();
+        deuxiemeLigne.setProduitId(2L);
+        deuxiemeLigne.setQuantite(2);
+        requete.setLignes(List.of(premiereLigne, deuxiemeLigne));
+
+        assertThatThrownBy(() -> commandeService.creerCommande(requete))
+                .isInstanceOf(LigneDupliqueeException.class)
+                .hasMessageContaining("2");
     }
 }
