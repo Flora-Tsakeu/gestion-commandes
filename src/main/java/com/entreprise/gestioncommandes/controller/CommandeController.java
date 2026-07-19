@@ -90,6 +90,11 @@ public class CommandeController {
         return commandeService.listerToutes();
     }
 
+    @GetMapping("/prioritaires")
+    public List<Commande> listerPrioritaires() {
+        return commandeService.listerPrioritairesNonTraitees();
+    }
+
     @GetMapping("/paginees")
     public Page<Commande> listerPaginees(Pageable pageable, @RequestParam(required = false) String client) {
         if (client != null && !client.isBlank()) {

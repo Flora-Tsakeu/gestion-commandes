@@ -157,6 +157,10 @@ public class CommandeService {
         return commandeRepository.findByAnnuleeOrderByDateCreationDesc(annulee);
     }
 
+    public List<Commande> listerPrioritairesNonTraitees() {
+        return commandeRepository.findByPrioritaireTrueAndAnnuleeFalseOrderByDateCreationAsc();
+    }
+
     public List<Commande> listerParPeriode(LocalDateTime debut, LocalDateTime fin) {
         return commandeRepository.findByDateCreationBetweenOrderByDateCreationDesc(debut, fin);
     }
