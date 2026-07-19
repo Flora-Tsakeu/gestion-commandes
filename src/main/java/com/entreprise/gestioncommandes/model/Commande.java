@@ -51,6 +51,8 @@ public class Commande {
     @Size(max = 60, message = "la reference externe ne peut pas depasser 60 caracteres")
     private String referenceExterne;
 
+    private boolean prioritaire = false;
+
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<LigneCommande> lignes = new ArrayList<>();
@@ -156,5 +158,13 @@ public class Commande {
 
     public void setReferenceExterne(String referenceExterne) {
         this.referenceExterne = referenceExterne;
+    }
+
+    public boolean isPrioritaire() {
+        return prioritaire;
+    }
+
+    public void setPrioritaire(boolean prioritaire) {
+        this.prioritaire = prioritaire;
     }
 }

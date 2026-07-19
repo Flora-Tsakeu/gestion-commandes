@@ -30,6 +30,8 @@ public class CommandeRequest {
     @Size(max = 60, message = "la reference externe ne peut pas depasser 60 caracteres")
     private String referenceExterne;
 
+    private boolean prioritaire;
+
     public String getClient() {
         return client;
     }
@@ -76,5 +78,13 @@ public class CommandeRequest {
 
     public void setReferenceExterne(String referenceExterne) {
         this.referenceExterne = referenceExterne;
+    }
+
+    public boolean isPrioritaire() {
+        return prioritaire;
+    }
+
+    public void setPrioritaire(boolean prioritaire) {
+        this.prioritaire = prioritaire;
     }
 }

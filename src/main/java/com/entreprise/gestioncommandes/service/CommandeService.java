@@ -92,6 +92,7 @@ public class CommandeService {
         commande.setNotes(requete.getNotes());
         commande.setClientEmail(requete.getClientEmail());
         commande.setReferenceExterne(requete.getReferenceExterne());
+        commande.setPrioritaire(requete.isPrioritaire());
 
         
         Commande enregistree = commandeRepository.save(commande);
