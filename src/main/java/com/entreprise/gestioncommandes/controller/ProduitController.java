@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.controller;
 
+import com.entreprise.gestioncommandes.dto.DisponibiliteProduit;
 import com.entreprise.gestioncommandes.dto.ReapprovisionnementRequest;
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.dto.TopProduitVendu;
@@ -89,6 +90,11 @@ public class ProduitController {
     @GetMapping("/reference/{reference}")
     public Produit recupererParReference(@PathVariable String reference) {
         return produitService.recupererParReference(reference);
+    }
+
+    @GetMapping("/{id}/disponibilite")
+    public DisponibiliteProduit verifierDisponibilite(@PathVariable Long id, @RequestParam(defaultValue = "1") int quantite) {
+        return produitService.verifierDisponibilite(id, quantite);
     }
 
     @PostMapping
