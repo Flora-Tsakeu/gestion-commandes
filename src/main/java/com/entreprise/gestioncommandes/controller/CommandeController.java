@@ -3,6 +3,7 @@ package com.entreprise.gestioncommandes.controller;
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.IntegriteCommande;
 import com.entreprise.gestioncommandes.dto.NotesRequest;
+import com.entreprise.gestioncommandes.dto.ResumeQuotidien;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.model.Commande;
 import com.entreprise.gestioncommandes.service.CommandeService;
@@ -51,6 +52,11 @@ public class CommandeController {
     @GetMapping("/statistiques")
     public StatistiquesCommandes statistiques() {
         return commandeService.calculerStatistiques();
+    }
+
+    @GetMapping("/resume-quotidien")
+    public List<ResumeQuotidien> resumeQuotidien() {
+        return commandeService.obtenirResumeSeptDerniersJours();
     }
 
     @GetMapping("/export")

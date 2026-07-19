@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
+import com.entreprise.gestioncommandes.dto.ResumeQuotidien;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
@@ -158,6 +159,12 @@ public class CommandeService {
 
     public List<Commande> listerParPeriode(LocalDateTime debut, LocalDateTime fin) {
         return commandeRepository.findByDateCreationBetweenOrderByDateCreationDesc(debut, fin);
+    }
+
+    public List<ResumeQuotidien> obtenirResumeSeptDerniersJours() {
+        LocalDateTime debut = LocalDateTime.now().minusDays(7);
+        List<Commande> commandes = listerParPeriode(debut, LocalDateTime.now());
+        return ResumeQuotidienService.regrouperParJour(commandes);
     }
 
     public StatistiquesCommandes calculerStatistiques() {
