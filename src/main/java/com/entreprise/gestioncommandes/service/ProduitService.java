@@ -1,5 +1,6 @@
 package com.entreprise.gestioncommandes.service;
 
+import com.entreprise.gestioncommandes.dto.DisponibiliteProduit;
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.dto.TopProduitVendu;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
@@ -62,6 +63,11 @@ public class ProduitService {
                 .orElseThrow(() -> new ProduitIntrouvableException(reference));
     }
 
+    public DisponibiliteProduit verifierDisponibilite(Long id, int quantiteDemandee) {
+        Produit produit = recupererParId(id);
+        boolean disponible = produit.isActif() && produit.getQuantiteStock() >= quantiteDemandee;
+        return new DisponibiliteProduit(disponible, produit.getQuantiteStock(), quantiteDemandee);
+    }
 
     public Produit creerProduit(Produit produit) {
         produitRepository.findByReference(produit.getReference()).ifPresent(existant -> {
