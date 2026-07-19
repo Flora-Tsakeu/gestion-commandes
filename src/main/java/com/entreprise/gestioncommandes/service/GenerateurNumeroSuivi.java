@@ -5,12 +5,13 @@ import java.util.UUID;
 public final class GenerateurNumeroSuivi {
 
     private static final String PREFIXE = "CMD-";
-    private static final int LONGUEUR_SUFFIXE = 8;
+    private static final int LONGUEUR_SUFFIXE = 12;
 
     private GenerateurNumeroSuivi() {
     }
 
     public static String genererNouveauNumero() {
-        return PREFIXE + UUID.randomUUID().toString().substring(0, LONGUEUR_SUFFIXE).toUpperCase();
+        String hex = UUID.randomUUID().toString().replace("-", "").toUpperCase();
+        return PREFIXE + hex.substring(0, LONGUEUR_SUFFIXE);
     }
 }

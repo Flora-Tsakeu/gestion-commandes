@@ -15,8 +15,8 @@ class GenerateurNumeroSuiviTest {
         String numero = GenerateurNumeroSuivi.genererNouveauNumero();
 
         assertThat(numero).startsWith("CMD-");
-        assertThat(numero).hasSize(12);
-        assertThat(numero.substring(4)).matches("[A-F0-9]{8}");
+        assertThat(numero).hasSize(16);
+        assertThat(numero.substring(4)).matches("[A-F0-9]{12}");
     }
 
     @Test
