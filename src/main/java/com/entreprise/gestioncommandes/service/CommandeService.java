@@ -3,7 +3,9 @@ package com.entreprise.gestioncommandes.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import com.entreprise.gestioncommandes.dto.ResumeQuotidien;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.exception.AnnulationImpossibleException;
 import com.entreprise.gestioncommandes.exception.CommandeIntrouvableException;
+import com.entreprise.gestioncommandes.exception.LigneDupliqueeException;
 import com.entreprise.gestioncommandes.exception.MontantMinimumNonAtteintException;
 import com.entreprise.gestioncommandes.exception.ProduitInactifException;
 import com.entreprise.gestioncommandes.exception.ProduitIntrouvableException;
@@ -55,6 +58,8 @@ public class CommandeService {
                 && commandeRepository.existsByReferenceExterne(requete.getReferenceExterne())) {
             throw new ReferenceExterneDejaUtiliseeException(requete.getReferenceExterne());
         }
+
+        verifierAbsenceDeLignesDupliquees(requete.getLignes());
         
         Commande commande = new Commande(requete.getClient());
         BigDecimal totalHt = BigDecimal.ZERO;
@@ -106,6 +111,15 @@ public class CommandeService {
     public Commande recupererParId(Long id) {
         return commandeRepository.findById(id)
                 .orElseThrow(() -> new CommandeIntrouvableException(id));
+    }
+
+    private void verifierAbsenceDeLignesDupliquees(List<LigneCommandeRequest> lignes) {
+        Set<Long> produitsVus = new HashSet<>();
+        for (LigneCommandeRequest ligne : lignes) {
+            if (!produitsVus.add(ligne.getProduitId())) {
+                throw new LigneDupliqueeException(ligne.getProduitId());
+            }
+        }
     }
 
     public Commande recupererParNumeroSuivi(String numeroSuivi) {
