@@ -392,6 +392,50 @@ class CommandeIntegrationIT {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void doitListerUneCommandePrioritaireNonTraitee() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "prioritaire": true,
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.prioritaire").value(true));
+
+        mockMvc.perform(get("/api/commandes/prioritaires"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].client").value("Boutique Nord"));
+    }
+
+    @Test
+    void doitInclureLaCommandeDuJourDansLeResumeQuotidien() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/commandes/resume-quotidien"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nombreCommandes").value(1));
+    }
+
 
      
 
