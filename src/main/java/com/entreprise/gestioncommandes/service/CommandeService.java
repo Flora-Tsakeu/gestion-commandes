@@ -1,5 +1,17 @@
 package com.entreprise.gestioncommandes.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.entreprise.gestioncommandes.dto.CommandeRequest;
 import com.entreprise.gestioncommandes.dto.LigneCommandeRequest;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
@@ -16,17 +28,6 @@ import com.entreprise.gestioncommandes.model.ModeLivraison;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.CommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 
 @Service
@@ -72,8 +73,7 @@ public class CommandeService {
             produit.setQuantiteStock(produit.getQuantiteStock() - ligneRequete.getQuantite());
             produitRepository.save(produit);
 
-            LigneCommande ligne = new LigneCommande(produit, ligneRequete.getQuantite());
-            ligne.setPrixUnitaireHtApplique(produit.getPrixUnitaireHt());
+            LigneCommande ligne = CommandeMapper.construireLigne(produit, ligneRequete.getQuantite());
             ligne.setCommande(commande);
             commande.getLignes().add(ligne);
 
@@ -123,12 +123,7 @@ public class CommandeService {
         nouvelleRequete.setNotes("duplication de la commande " + originale.getNumeroSuivi());
 
         List<LigneCommandeRequest> lignes = originale.getLignes().stream()
-                .map(ligne -> {
-                    LigneCommandeRequest ligneRequete = new LigneCommandeRequest();
-                    ligneRequete.setProduitId(ligne.getProduit().getId());
-                    ligneRequete.setQuantite(ligne.getQuantite());
-                    return ligneRequete;
-                })
+                .map(CommandeMapper::versLigneCommandeRequest)
                 .toList();
         nouvelleRequete.setLignes(lignes);
 
