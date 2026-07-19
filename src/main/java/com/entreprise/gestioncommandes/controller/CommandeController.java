@@ -6,6 +6,7 @@ import com.entreprise.gestioncommandes.dto.NotesRequest;
 import com.entreprise.gestioncommandes.dto.ResumeQuotidien;
 import com.entreprise.gestioncommandes.dto.StatistiquesCommandes;
 import com.entreprise.gestioncommandes.model.Commande;
+import com.entreprise.gestioncommandes.model.LigneCommande;
 import com.entreprise.gestioncommandes.service.CommandeService;
 import com.entreprise.gestioncommandes.service.ExportCommandeService;
 import com.entreprise.gestioncommandes.service.IntegriteCommandeService;
@@ -77,6 +78,11 @@ public class CommandeController {
     public IntegriteCommande verifierIntegrite(@PathVariable Long id) {
         Commande commande = commandeService.recupererParId(id);
         return IntegriteCommandeService.verifier(commande);
+    }
+
+    @GetMapping("/{id}/lignes")
+    public List<LigneCommande> listerLignes(@PathVariable Long id) {
+        return commandeService.recupererParId(id).getLignes();
     }
 
     @GetMapping("/numero-suivi/{numero}")
