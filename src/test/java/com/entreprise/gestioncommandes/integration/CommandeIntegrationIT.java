@@ -436,6 +436,48 @@ class CommandeIntegrationIT {
                 .andExpect(jsonPath("$[0].nombreCommandes").value(1));
     }
 
+    @Test
+    void doitListerLesLignesDuneCommande() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 2 }
+                  ]
+                }
+                """.formatted(idProduitDispo);
+
+        String reponse = mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Long idCommande = objectMapper.readTree(reponse).get("id").asLong();
+
+        mockMvc.perform(get("/api/commandes/" + idCommande + "/lignes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].quantite").value(2))
+                .andExpect(jsonPath("$[0].montantLigneHt").value(59.80));
+    }
+
+    @Test
+    void doitRefuserDeuxLignesPointantVersLeMemeProduitEnIntegration() throws Exception {
+        String corps = """
+                {
+                  "client": "Boutique Nord",
+                  "lignes": [
+                    { "produitId": %d, "quantite": 1 },
+                    { "produitId": %d, "quantite": 2 }
+                  ]
+                }
+                """.formatted(idProduitDispo, idProduitDispo);
+
+        mockMvc.perform(post("/api/commandes")
+                        .contentType(APPLICATION_JSON)
+                        .content(corps))
+                .andExpect(status().isBadRequest());
+    }
+
 
      
 
