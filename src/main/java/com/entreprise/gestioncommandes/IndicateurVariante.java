@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class IndicateurVariante implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(IndicateurVariante.class);
-    private static final String VARIANTE = "run-466";
+    private static final String VARIANTE = "run-467";
 
     @Override
     public void run(String... args) {
