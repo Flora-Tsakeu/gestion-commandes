@@ -15,6 +15,6 @@ public final class CalculateurTva {
     }
 
     public static BigDecimal calculerMontantTtc(BigDecimal montantHt) {
-        return arrondirDeuxDecimales(montantHt.multiply(BigDecimal.ONE.add(TAUX_TVA)));
+        return arrondirDeuxDecimales(montantHt.multiply(BigDecimal.ONE.add(TAUX_TVA));
     }
 }
