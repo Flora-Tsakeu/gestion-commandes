@@ -5,9 +5,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class ExportCommandeService {
+
+    @Value("${securite.cle.api}")
+    private String cleApi;
 
     private static final String ENTETE = "numeroSuivi;client;dateCreation;modeLivraison;montantTotalHt;montantTotalTtc";
 
