@@ -55,7 +55,7 @@ public class ProduitRepositoryFactice implements ProduitRepository {
 
     @Override
     public List<Produit> findEnDessousDeLeurSeuilAlerte() {
-        // TODO Auto-generated method stub
+        // TODO Auto-generated method st
         throw new UnsupportedOperationException("Unimplemented method 'findEnDessousDeLeurSeuilAlerte'");
     }
 
