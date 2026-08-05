@@ -11,12 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
-import org.springframework.stereotype.Repository;
+
 
 import com.entreprise.gestioncommandes.dto.ResumeStockCategorie;
 import com.entreprise.gestioncommandes.model.Produit;
 
-@Repository
+
 public class ProduitRepositoryFactice implements ProduitRepository {
     
     // Spring vous obligera à redéfinir les méthodes de l'interface.
