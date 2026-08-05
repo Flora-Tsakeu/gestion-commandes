@@ -11,7 +11,6 @@ import com.entreprise.gestioncommandes.repository.LigneCommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,8 @@ public class ProduitService {
 
     private static final Logger log = LoggerFactory.getLogger(ProduitService.class);
 
-    @Qualifier("inexistant")
     private final ProduitRepository produitRepository;
-    
+
     private final LigneCommandeRepository ligneCommandeRepository;
 
 
