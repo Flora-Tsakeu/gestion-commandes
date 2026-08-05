@@ -15,6 +15,6 @@ public final class ValidateurCommande {
         }
         if (produit.getQuantiteStock() < quantiteDemandee) {
             throw new StockInsuffisantException(produit.getReference(), quantiteDemandee, produit.getQuantiteStock());
-        }
+        
     }
 }
