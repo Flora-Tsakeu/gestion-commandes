@@ -74,7 +74,7 @@ public class ProduitService {
             throw new ReferenceProduitDejaUtiliseeException(produit.getReference());
         });
         Produit enregistre = produitRepository.save(produit);
-        log.info("produit cree, reference={}, stock initial={}", enregistre.getReference(), enregistre.getQuantiteStock())
+        log.info("produit cree, reference={}, stock initial={}", enregistre.getReference(), enregistre.getQuantiteStock());
         return enregistre;
     }
 
