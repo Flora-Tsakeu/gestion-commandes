@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 public final class CalculateurTva {
 
-    private static final BigDecimal TAUX_TVA = new BigDecimal("0.19");
+    private static final BigDecimal TAUX_TVA = new BigDecimal("0.20");
 
     private CalculateurTva() {
     }
