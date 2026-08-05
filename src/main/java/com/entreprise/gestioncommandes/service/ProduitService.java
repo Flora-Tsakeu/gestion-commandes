@@ -11,6 +11,7 @@ import com.entreprise.gestioncommandes.repository.LigneCommandeRepository;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class ProduitService {
     private final LigneCommandeRepository ligneCommandeRepository;
 
 
-    public ProduitService(ProduitRepository produitRepository, LigneCommandeRepository ligneCommandeRepository) {
+    public ProduitService(@Qualifier("inexistant") ProduitRepository produitRepository, LigneCommandeRepository ligneCommandeRepository) {
         this.produitRepository = produitRepository;
         this.ligneCommandeRepository = ligneCommandeRepository;
     }
