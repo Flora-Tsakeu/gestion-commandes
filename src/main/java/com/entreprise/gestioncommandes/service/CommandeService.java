@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,9 @@ import com.entreprise.gestioncommandes.repository.ProduitRepository;
 
 @Service
 public class CommandeService {
+
+    @Value("${duplication.delai.max}")
+    private String delaiMax;
 
     private static final Logger log = LoggerFactory.getLogger(CommandeService.class);
     private static final int DELAI_MAX_ANNULATION_JOURS = 30;
