@@ -13,7 +13,7 @@ public final class ValidateurCommande {
         if (!produit.isActif()) {
             throw new ProduitInactifException(produit.getReference());
         }
-        if (produit.getQuantiteStock() > quantiteDemandee) {
+        if (produit.getQuantiteStock() < quantiteDemandee) {
             throw new StockInsuffisantException(produit.getReference(), quantiteDemandee, produit.getQuantiteStock());
         }
     }
