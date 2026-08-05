@@ -42,14 +42,12 @@ public class CommandeService {
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
     private final NotificationService notificationService;
-    private final ExportCommandeService exportCommandeService;
 
     public CommandeService(CommandeRepository commandeRepository, ProduitRepository produitRepository,
-                            NotificationService notificationService, ExportCommandeService exportCommandeService) {
+                            NotificationService notificationService) {
         this.commandeRepository = commandeRepository;
         this.produitRepository = produitRepository;
         this.notificationService = notificationService;
-        this.exportCommandeService= exportCommandeService;
     }
 
     @Transactional
