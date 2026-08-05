@@ -28,7 +28,7 @@ public class LigneCommande {
 
     @NotNull
     @Min(value = 1, message = "la quantite commandee doit etre superieure a zero")
-    private Integer quantite;
+    private Integer quantite = "texte";
 
     private BigDecimal prixUnitaireHtApplique;
 
