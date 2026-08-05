@@ -40,7 +40,7 @@ public class Produit {
 
     @NotNull
     @Min(value = 0, message = "le seuil d'alerte ne peut pas etre negatif")
-    private Integer seuilAlerte = -1;
+    private Integer seuilAlerte = 5;
 
     private boolean actif = true;
 
