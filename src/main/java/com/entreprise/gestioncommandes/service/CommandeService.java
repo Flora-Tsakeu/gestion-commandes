@@ -37,7 +37,7 @@ public class CommandeService {
 
     private static final Logger log = LoggerFactory.getLogger(CommandeService.class);
     private static final int DELAI_MAX_ANNULATION_JOURS = 30;
-    private static final BigDecimal MONTANT_MINIMUM_HT = new BigDecimal("50.00");
+    private static final BigDecimal MONTANT_MINIMUM_HT = new BigDecimal("5.00");
     
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository;
