@@ -4,13 +4,10 @@ import com.entreprise.gestioncommandes.model.Commande;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class NotificationService {
 
-    @Value("${notification.canal.url}")
-    private String canalUrl;
 
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
 
