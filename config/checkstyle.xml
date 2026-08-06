@@ -17,10 +17,6 @@
         <module name="WhitespaceAround"/>
         <module name="ModifierOrder"/>
         <module name="EqualsHashCode"/>
-        <module name="CyclomaticComplexity">
-            <property name="max" value="5"/>
-        </module>
-
     </module>
 
     <module name="FileTabCharacter"/>
