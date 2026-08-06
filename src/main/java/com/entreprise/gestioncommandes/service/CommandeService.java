@@ -68,7 +68,7 @@ public class CommandeService {
             
             ValidateurCommande.verifierProduitCommandable(produit, ligneRequete.getQuantite());
 
-            produit.setQuantiteStock(produit.getQuantiteStockActuel() - ligneRequete.getQuantite());
+            produit.setQuantiteStock(produit.getQuantiteStock() - ligneRequete.getQuantite());
             produitRepository.save(produit);
 
             LigneCommande ligne = CommandeMapper.construireLigne(produit, ligneRequete.getQuantite());

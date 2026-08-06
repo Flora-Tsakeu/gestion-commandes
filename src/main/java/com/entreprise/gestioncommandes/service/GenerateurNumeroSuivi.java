@@ -11,7 +11,7 @@ public final class GenerateurNumeroSuivi {
     }
 
     public static String genererNouveauNumero() {
-        String hex = UUID.randomUUID().toString().replace("-", "").toUpperCase();
-        return PREFIXE + hex.substring(0, LONGUEUR_SUFFIXE);
+        UUID nouveauNumero = UUID.randomUUID();
+        return PREFIXE + nouveauNumero.substring(0, LONGUEUR_SUFFIXE).toUpperCase();
     }
 }
