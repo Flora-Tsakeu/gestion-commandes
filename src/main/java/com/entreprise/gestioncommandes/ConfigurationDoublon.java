@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 public class ConfigurationDoublon {
 
     @Bean
-    public NotificationService notificationServiceSecondaire() {
+    public NotificationService notificationService() {
         return new NotificationService();
     }
 }
