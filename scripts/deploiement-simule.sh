@@ -15,7 +15,7 @@ if [ -z "${DEPLOY_TOKEN:-}" ]; then
     echo "le token d'authentification vers l'environnement cible est absent"
     exit 1
 fi
-# exe 9: j'ai mis un token invalide  pour l'echec de deploiement 
+# exe 10: j'ai mis un token invalide  pour l'echec de deploiement 
 if [ "${#DEPLOY_TOKEN}" -lt 16 ]; then
     echo "le token d'authentification fourni ne respecte pas le format attendu"
     exit 1
