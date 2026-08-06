@@ -14,7 +14,7 @@
     <groupId>com.entreprise</groupId>
     <artifactId>gestion-commandes</artifactId>
     <version>0.1.0</version>
-    <name>gestion-commandes</name>
+    <name>Gestion Commandes & Stocks</name>
     <description>API de gestion de commandes et de stocks</description>
 
     <properties>
@@ -38,7 +38,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
-        </dependencies>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
