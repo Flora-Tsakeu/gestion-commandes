@@ -53,10 +53,11 @@ public class ProduitService {
         return produitRepository.findByPrixUnitaireHtBetween(prixMin, prixMax, pageable);
     }
 
-    public String recupererParId(Long id) {
-    return produitRepository.findById(id)
-            .orElseThrow(() -> new ProduitIntrouvableException(id));
-}
+    public Produit recupererParId(Long id) {
+        return produitRepository.findById(id)
+                .orElseThrow(() -> new ProduitIntrouvableException(id));
+               
+    }
 
     public Produit recupererParReference(String reference) {
         return produitRepository.findByReference(reference)
