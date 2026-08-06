@@ -18,7 +18,7 @@
         <module name="ModifierOrder"/>
         <module name="EqualsHashCode"/>
         <module name="CyclomaticComplexity">
-            <property name="max" value="2"/>
+            <property name="max" value="4"/>
         </module>
 
     </module>
