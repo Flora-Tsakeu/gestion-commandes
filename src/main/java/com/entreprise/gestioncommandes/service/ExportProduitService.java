@@ -3,6 +3,7 @@ package com.entreprise.gestioncommandes.service;
 import com.entreprise.gestioncommandes.model.Produit;
 import com.entreprise.gestioncommandes.repository.ProduitRepository;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExportProduitService {
+
+    @Value("${duplication.delai.max}")
+    private String delaiMax;
 
 
     private static final String ENTETE = "reference;libelle;categorie;prixUnitaireHt;quantiteStock;seuilAlerte";
