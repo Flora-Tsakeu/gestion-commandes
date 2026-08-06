@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public enum ModeLivraison {
 
     STANDARD(BigDecimal.ZERO),
-    EXPRESS(new BigDecimal("14.90"));
+    EXPRESS(new BigDecimal("9.90"));
 
     private final BigDecimal fraisHt;
 
