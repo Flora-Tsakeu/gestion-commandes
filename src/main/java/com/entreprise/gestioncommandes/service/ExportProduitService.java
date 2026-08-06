@@ -18,7 +18,6 @@ public class ExportProduitService {
 
     public ExportProduitService(ProduitRepository produitRepository) {
         this.produitRepository = produitRepository;
-        Produit exempleInvalide = new Produit("DEMO-001", "Produit de demonstration");
     }
 
     public String exporterCatalogueEnCsv() {
