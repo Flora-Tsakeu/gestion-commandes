@@ -122,4 +122,5 @@ public class Produit {
     public void setActif(boolean actif) {
         this.actif = actif;
     }
+    // J'ecris ceci pour le push de test de communication  avec mon service fast api  et du fonctionnement correct de ce dernier.
 }
