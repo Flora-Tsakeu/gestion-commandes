@@ -1,0 +1,20 @@
+name: orchestration-cloture-run
+
+on:
+  workflow_run:
+    workflows: ["pipeline-gestion-commandes"]
+    types: [completed]
+
+jobs:
+  cloture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Signaler la cloture du run au service d'orchestration
+        env:
+          FASTAPI_URL: ${{ secrets.FASTAPI_URL }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          curl -s -X POST "$FASTAPI_URL/run-complete" \
+            -H "Content-Type: application/json" \
+            -d "{\"run_id\": \"$RUN_ID\", \"conclusion\": \"$CONCLUSION\"}"
