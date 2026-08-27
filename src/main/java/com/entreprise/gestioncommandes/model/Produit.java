@@ -122,5 +122,5 @@ public class Produit {
     public void setActif(boolean actif) {
         this.actif = actif;
     }
-    // J'ai fait une correction de mon fast API, maintenant , je test à nouveau
+    // Problème de configuration du fichier d'env de mon service.. je reprends
 }
