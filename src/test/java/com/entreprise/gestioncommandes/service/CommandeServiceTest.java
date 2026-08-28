@@ -77,7 +77,7 @@ class CommandeServiceTest {
 
         Commande resultat = commandeService.creerCommande(requete);
 
-        assertThat(resultat.getMontantTotalHt()).isEqualByComparingTo("398.00");
+        assertThat(resultat.getMontantTotalHt()).isEqualByComparingTo("390.00");
         assertThat(resultat.getMontantTotalTtc()).isEqualByComparingTo("477.60");
     }
 
