@@ -122,5 +122,5 @@ public class Produit {
     public void setActif(boolean actif) {
         this.actif = actif;
     }
-    // Problème de configuration du fichier d'env de mon service.. je reprends
+    // Problème corrigé , on  observe la communication après correction du problème
 }
