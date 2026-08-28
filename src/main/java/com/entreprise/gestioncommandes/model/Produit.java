@@ -122,5 +122,5 @@ public class Produit {
     public void setActif(boolean actif) {
         this.actif = actif;
     }
-    // Problème corrigé , on  observe la communication après correction du problème
+    // analyse 1
 }
