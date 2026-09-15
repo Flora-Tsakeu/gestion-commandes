@@ -122,5 +122,5 @@ public class Produit {
     public void setActif(boolean actif) {
         this.actif = actif;
     }
-    // on reprend les test apres petite mise à jour  reprise: 2
+    // on reprend les test apres petite mise à jour  reprise: 3
 }
