@@ -22,7 +22,7 @@ class InfoIntegrationIT {
         mockMvc.perform(get("/api/info"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nomApplication").value("gestion-commandes"))
-                .andExpect(jsonPath("$.version").value("0.1.1"))//0.1.0 modifier ici
+                .andExpect(jsonPath("$.version").value("0.1.0"))//0.1.0 modifier ici
                 .andExpect(jsonPath("$.horodatageServeur").exists());
     }
 }
