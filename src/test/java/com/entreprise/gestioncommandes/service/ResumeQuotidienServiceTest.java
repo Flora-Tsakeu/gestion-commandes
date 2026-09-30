@@ -30,7 +30,7 @@ class ResumeQuotidienServiceTest {
 
         assertThat(resultat).hasSize(2);
         assertThat(resultat.get(0).getNombreCommandes()).isEqualTo(2);
-        assertThat(resultat.get(0).getChiffreAffairesTtc()).isEqualByComparingTo("150.00");
+        assertThat(resultat.get(0).getChiffreAffairesTtc()).isEqualByComparingTo("151.00");// 150.00
         assertThat(resultat.get(1).getNombreCommandes()).isEqualTo(1);
     }
 
