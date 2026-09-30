@@ -122,5 +122,5 @@ public class Produit {
     public void setActif(boolean actif) {
         this.actif = actif;
     }
-    // repar com : 1
+    // repar com : 2
 }
