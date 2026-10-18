@@ -8,6 +8,11 @@
     <property name="severity" value="warning"/>
 
     <module name="TreeWalker">
+        <!-- Ajout du module de complexité cyclomatique pour forcer l'échec -->
+        <module name="CyclomaticComplexity">
+            <property name="max" value="2"/>
+        </module>
+
         <module name="UnusedImports"/>
         <module name="RedundantImport"/>
         <module name="EmptyBlock"/>
